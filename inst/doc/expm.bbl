@@ -1,0 +1,33 @@
+\begin{thebibliography}{4}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Eaton(2002)]{octave}
+J.~W. Eaton.
+\newblock \emph{{GNU} Octave Manual}.
+\newblock Network Theory Limited, 2002.
+\newblock ISBN 0-9541617-2-6.
+\newblock URL \url{http://www.octave.org}.
+
+\bibitem[Higham(2008)]{Higham:2008}
+N.~J. Higham.
+\newblock \emph{Functions of Matrices: Theory and Computation}.
+\newblock Society for Industrial and Applied Mathematics, Philadelphia, PA,
+  USA, 2008.
+
+\bibitem[Moler and Van~{L}oan(1978)]{MolerVanLoan:78}
+C.~Moler and C.~Van~{L}oan.
+\newblock Nineteen dubious ways to compute the exponential of a matrix.
+\newblock \emph{{SIAM} Review}, 20:\penalty0 801--836, 1978.
+
+\bibitem[Ward(1977)]{Ward:77}
+R.~C. Ward.
+\newblock Numerical computation of the matrix exponential with accuracy
+  estimate.
+\newblock \emph{{SIAM} Journal on Numerical Analysis}, 14:\penalty0 600--610,
+  1977.
+
+\end{thebibliography}

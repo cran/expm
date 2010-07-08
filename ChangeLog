@@ -1,0 +1,127 @@
+2009-06-06  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.96-2
+
+	* tests/exact-ex.R: adapt last test, to also pass on 32-bit Mac OSX
+
+2009-06-02  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/exact-ex.R: move print() to see Mac OSX error
+
+2009-03-02  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/sqrtm.R (sqrtm): allow negative eigenvalues, with a
+	message iff "verbose"; use sqrt(<complex>) in that case.
+	* R/logm.Higham08.R (logm.Higham08): allow negative eigenvalues,
+	as in sqrtm.
+
+	* R/expmCond-all.R (.expmCond.1, .expmFrechet2008.26): and others;
+	cosmetic (speedy!) improvements; dating of Feb.23.
+
+2009-02-28  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version, Depends): 0.96-1, Matrix
+
+	* src/logm-eigen.c (logm_eigen): *do* signal an error, not just
+	print; as the help page has always said.
+
+	* man/logm.Rd: comment 'order' and 'trySym' out; introduce
+	method = "Higham08" and make it the default (!)
+	* R/logm.R: ditto
+
+	* R/logm.Higham08.R: new logm.Higham08() from Michael Stadelmann's thesis.
+	* R/sqrtm.R: new sqrtm(), ditto
+	* NAMESPACE: add here.
+	* tests/log+sqrt.R: tests for these; notably small non-diagonalizable cases
+
+	* R/expm2.R (expm.Higham08): renamed 'expm2' to expm.Higham08
+
+2009-02-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.95-1
+	* R/expmCond-all.R: only public expmCond(*, method=.) function,
+		instead of expmCond1Est() etc.
+	* man/expmCond.Rd:   ditto
+	* tests/expm-Cond.R: ditto
+
+2009-02-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Maintainer): myself, for the moment; need to get
+	E-mail feedback from win-builder.
+
+	* tests/expm-Cond.R: new tests for expmCond*()
+
+	* tests/exact-ex.R: factor the utilities out into new file; add expm2()
+	* demo/exact-fn.R:  containing only (function + data) definitions
+
+2009-02-18  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/expmCond-all.R (expmFrechet): method "blockEnlarge", also for testing
+	* man/expmFrechet.Rd:             the default method
+
+2009-02-17  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.95-0
+
+	* R/expm2.R (expm2): new algorithms from Michael Stadelmann's
+	Master thesis work
+	* R/expmCond-all.R (expmCond, ..): Exponential Condition Number estimation
+	* man/expm2.Rd, man/expmCond.Rd, man/expmFrechet.Rd: docu
+	* NAMESPACE: export new functions
+
+2009-01-30  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/R_dgebal.c (R_dgebal): fix to work also for integer matrix()
+	* src/expm.c (do_expm),
+	* src/expm-eigen.c (do_expm_eigen): ditto
+	* tests/bal-ex.R:  and test for it.
+
+2008-05-13 Christophe Dutang <christophe.dutang@ensimag.fr>
+	* Use Lapack function zgecon in "hybrid_Eigen_Ward" to test the
+	singularity.
+	* Start the matrix logarithm logm.
+
+
+2008-03-20  Vincent Goulet  <vincent.goulet@act.ulaval.ca>
+
+	* New function matpow() as alias to operator %^%.
+	* R/matpow.R: miscellaneous fixes and prettyfication of comments
+
+
+2008-03-01  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/expm.R (expm): rename "Eigen" to "R_Eigen"
+
+	* src/expm.c (expm): get "1bal" case right.
+	* tests/compare-bal-expm.R: minimal testing of "2bal" vs "1bal"
+
+2008-02-29  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/expm.c (expm): second argument 'precond_kind'
+
+	* src/expm.h: update for new second argument
+
+	* src/expm-eigen.h: implement workaround for Lapack.h's zlange() typo
+
+2008-02-27  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.9-1  -- new version for the occasion
+
+	* src/expm.c (expm): HOORAY !! --- fixed the octave bug:
+	using simpler __ and correct __ code for  back-permuting
+
+	* R/expm.R (expm): add method = "R_Ward77"
+	  which works *correctly* !
+
+2008-02-25  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/matpower.R ("%^%"): add R interface to
+	* src/matpow.c
+
+2008-02-23  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/expm.R (expm): add methods from David Firth's "mexp"
+	and my modifications, of Fortran code in
+	* src/mexp-common.f
+	* src/matrexp.f
+	* src/matrexpO.f

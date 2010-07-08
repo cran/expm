@@ -1,0 +1,47 @@
+# French translations for expm package
+# Traduction française du package expm.
+# Copyright (C) 2007 Vincent Goulet
+# This file is distributed under the same license as the expm package.
+# Vincent Goulet <vincent@vgoulet.act.ulaval.ca>, 2007.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: expm 0.0-1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-11-20 13:46-0500\n"
+"PO-Revision-Date: 2007-11-20 13:56-0500\n"
+"Last-Translator: Vincent Goulet <vincent@vgoulet.act.ulaval.ca>\n"
+"Language-Team: Vincent Goulet <vincent@vgoulet.act.ulaval.ca>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: expm.c:106
+#, c-format
+msgid "LAPACK routine dgebal returned info code %d when permuting"
+msgstr "la procédure LAPACK dgebal a produit le code d'erreur %d lors de la permutation"
+
+#: expm.c:110
+#, c-format
+msgid "LAPACK routine dgebal returned info code %d when scaling"
+msgstr "la procédure LAPACK dgebal a produit le code d'erreur %d lors de la mis à l'échelle"
+
+#: expm.c:157
+#, c-format
+msgid "LAPACK routine dgetrf returned info code %d"
+msgstr "la procédure LAPACK dgetrf a produit le code d'erreur %d"
+
+#: expm.c:160
+#, c-format
+msgid "LAPACK routine dgetrs returned info code %d"
+msgstr "la procédure LAPACK dgetrs a produit le code d'erreur %d"
+
+#: expm.c:232
+msgid "invalid argument"
+msgstr "argument incorrect"
+
+#: expm.c:238
+msgid "non-square matrix"
+msgstr "matrice non carrée"

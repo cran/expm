@@ -1,0 +1,3 @@
+expm			matrix exponential
+dgebalTst		Exploring LAPACK's dgebal() Matrix balancing
+exact-fn		Functions for examples with exactly known solution
