@@ -1,3 +1,14 @@
+2010-07-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.98-2
+
+	* src/matpow.c (R_matpow): fix modify-argument bug in %^%.
+	Thanks to stackflow-user "gd047" for reporting it.
+
+2010-07-08  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.98-1, for (first!) release to CRAN
+
 2009-06-06  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 0.96-2

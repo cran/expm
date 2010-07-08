@@ -147,9 +147,11 @@ if(require("sfsmisc")) {
 ep <- 1e-10
 (me <- m2ex3(ep))
 me$expA * exp(1) ## the correct value ; numerically identical to simple matrix:
-stopifnot(identical(me$expA * exp(1),
-                    rbind(c(  1,  1),
-                          c(ep^2, 1))))
+## identical() not fulfilled e.g. on Solaris
+stopifnot(all.equal(me$expA * exp(1),
+		    rbind(c(  1,  1),
+			  c(ep^2, 1)),
+		    tol = 1e-14))
 ## The relative error (matrices):
 lapply(expmList, function(EXPM) 1 - EXPM(me$A)/me$expA)
 

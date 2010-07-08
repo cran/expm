@@ -15,7 +15,7 @@ SEXP R_matpow(SEXP x, SEXP k)
 	/*-Wall */ return R_NilValue;
     }
     else {
-	SEXP dims = getAttrib(x, R_DimSymbol), z;
+	SEXP dims = getAttrib(x, R_DimSymbol), z, x_;
 	int n = INTEGER(dims)[0],
 	    ktmp = INTEGER(k)[0]; /* need copy, as it is altered in matpow() */
 
@@ -24,11 +24,13 @@ SEXP R_matpow(SEXP x, SEXP k)
 	if (n == 0)
 	    return(allocMatrix(REALSXP, 0, 0));
 
-	PROTECT(x = coerceVector(x, REALSXP)); /* coercion to numeric */
+	PROTECT(x_= duplicate(x));
+	if (!isReal(x)) /* coercion to numeric */
+	    x_= coerceVector(x_, REALSXP);
 	PROTECT(z = allocMatrix(REALSXP, n, n));
 	setAttrib(z, R_DimNamesSymbol,
 		  getAttrib(x, R_DimNamesSymbol));
-	matpow(REAL(x), n, ktmp, REAL(z));
+	matpow(REAL(x_), n, ktmp, REAL(z));
 
 	UNPROTECT(2);
 	return z;
