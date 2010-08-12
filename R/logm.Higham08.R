@@ -62,7 +62,9 @@ logm.Higham08 <- function(x) {
 
     ##-------Step 0: Schur Decomposition-----------------------------------------
 
-    Sch.x <- Schur(Matrix(x)) # checks for square matrix also
+    ## Schur() checks for square matrix also:
+    Sch.x <- Schur(Matrix(x, sparse=FALSE))
+    ## FIXME 'sparse=FALSE' is workaround - good as long Matrix has no sparse Schur()
     ev <- Sch.x@EValues
     if(getOption("verbose") && any(abs(Arg(ev) - pi) < 1e-7))
 ## Let's see what works: temporarily *NOT* stop()ping :
@@ -75,7 +77,8 @@ logm.Higham08 <- function(x) {
     I <- diag(n)
     thMax <- 0.264
     theta <- c(0.0162, 0.0539, 0.114, 0.187, thMax)
-    p <- k <- 0
+    p <- k <- 0 ; t.o <- -1
+    ## NB: The following could loop forever, e.g., for  logm(Diagonal(x=1:0))
     repeat{
         t <- norm(Tr - I, "1") # norm(x, .) : currently x is coerced to dgeMatrix
         if (t < thMax) {
@@ -86,9 +89,18 @@ logm.Higham08 <- function(x) {
                 m <- j2 ## m := order of the Padé-approximation
                 break
             }
+        } else if(k > 20 && abs(t.o - t) < 1e-7*t) {
+            ##
+            warning("Inverse scaling did not work (t =",
+                    format(t), ");\n",
+                    "maybe logm(x) is not defined for this 'x'.\n",
+                    "Setting m = 3 arbitrarily.")
+            m <- 3
+            break
         }
         Tr <- rootS(Tr)##--> Matrix Square root of Jordan T
         ##    -----    [see below;  compare with ./sqrtm.R
+        t.o <- t
         k <- k+1
     }
     if(getOption("verbose"))
