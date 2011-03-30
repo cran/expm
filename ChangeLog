@@ -1,3 +1,10 @@
+2011-03-30  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.98-4
+		(Suggests): RColorBrewer, sfsmisc -- used in examples
+
+	* inst/doc/expm.Rnw: replace the few non-ASCII chars by LaTeX.
+
 2010-08-12  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* R/logm.Higham08.R (logm.Higham08): force argument to Schur(.) to

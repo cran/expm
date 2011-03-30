@@ -2,7 +2,6 @@
   \usepackage{amsmath,url}
   \usepackage[round]{natbib}
   \usepackage[T1]{fontenc}
-  \usepackage[utf8]{inputenc}
   \usepackage[english]{babel}
   %\usepackage{lucidabr}
   \usepackage[noae]{Sweave}
@@ -12,7 +11,7 @@
 
   \title{Using \pkg{expm} in packages}
   \author{Christophe Dutang \\ ENSIMAG, Grenoble INP \\[3ex]
-    Vincent Goulet \\ École d'actuariat, Université Laval}
+    Vincent Goulet \\ \'Ecole d'actuariat, Universit\'e Laval}
   \date{Jan. 2008 \ {\footnotesize (added note in June 2010)}}
 
   \newcommand{\code}[1]{\texttt{#1}}
@@ -77,8 +76,8 @@ void expm(double *x, int n, double *z)
 where \code{x} is the vector underlying the \proglang{R} matrix and
 \code{n} is the number of lines (or columns) of the matrix. The matrix
 exponential is returned in \code{z}. The routine uses the algorithm of
-\cite{Ward:77} based on diagonal Padé table approximations in
-conjunction with three step preconditioning. The Padé approximation to
+\cite{Ward:77} based on diagonal Pad\'e table approximations in
+conjunction with three step preconditioning. The Pad\'e approximation to
 $e^{\mat{A}}$ is
 \begin{displaymath}
   e^{\mat{A}} \approx R(\mat{A}),
