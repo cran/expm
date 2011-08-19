@@ -31,8 +31,7 @@ void logm_eigen(double *x, int n, double *z, double tol)
     else
     {
         const char *transa = "N";
-        const char *one = "1";
-        const int nsqr = n * n, np1 = n + 1;
+        const int nsqr = n * n;
 
         const Rcomplex cone = {1., 0.}, czero = {0., 0.};
         int i, j;
