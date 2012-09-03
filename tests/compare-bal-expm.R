@@ -1,6 +1,6 @@
 library(expm)
 
-source(system.file("test-tools.R", package= "expm"))## -> assertError()...
+source(system.file("test-tools.R", package= "expm"), keep.source=FALSE)
 
 ## Compare the two different "balance" pre-conditioning versions in Ward77:
 

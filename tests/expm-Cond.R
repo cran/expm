@@ -2,9 +2,12 @@
 
 library(expm)
 
-source(system.file("test-tools.R", package = "expm"))## -> assertError(), rMat()
+mSource <- function(file, ...) source(system.file(file, ...,
+						  package = "expm", mustWork=TRUE),
+				      keep.source = FALSE)
+mSource("test-tools.R")## -> assertError(), rMat()
 ## getting examples where we know  expm(.) "exactly":
-source(system.file("demo", "exact-fn.R", package = "expm"))
+mSource("demo", "exact-fn.R")
 
 M <- xct10$m
 eC <- list(expmCondF = 566.582631819923,

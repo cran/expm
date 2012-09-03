@@ -1,11 +1,11 @@
 library(expm)
 
-source(system.file("test-tools.R", package= "expm"))## -> assertError()...
+source(system.file("test-tools.R", package= "expm"), keep.source=FALSE)# relErr()
 
 set.seed(101)
-for(n in c(1:5, 10:11, 100:101)) {
+for(n in c(1:5, 10:11, if(doExtras) 100:101 else 25)) {
     cat("n = ",n,"\n-----\n")
-    for(i in 1:10) {
+    for(i in seq_len(if(doExtras)10 else 3)) {
         A <- matrix(round(10*rnorm(n^2))/4, n,n)
         E <- matrix(rnorm(n^2, sd = 1e-3),  n,n)
         F1 <- expmFrechet(A, E)

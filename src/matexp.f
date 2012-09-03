@@ -6,22 +6,22 @@
 !-----------------------------------------------------------------------!
 
 !-----------------------------------------------------------------------!
-      SUBROUTINE MATEXPFORTRANSUB( IDEG,M,T,H,IFLAG )
+      subroutine matexpRBS (ideg, m, t, H, iflag)
 
       IMPLICIT NONE
-      INTEGER IDEG, M, LWSP, IEXPH, NS, IFLAG, IPIV(M)
-      DOUBLE PRECISION T, H(M,M), WSP(4*M*M+IDEG+1)
+      INTEGER ideg, m, iflag
+      DOUBLE PRECISION t, H(m,m)
 
 !-----PURPOSE-----------------------------------------------------------!
 !
 !     COMPUTES EXP(T*H), THE MATRIX EXPONENTIAL OF A GENERAL MATRIX IN
-!     FULL, USING THE IRREDUCIBLE RATIONAL PADE APPROXIMATION TO THE 
+!     FULL, USING THE IRREDUCIBLE RATIONAL PADE APPROXIMATION TO THE
 !     EXPONENTIAL FUNCTION EXP(X) = R(X) = (+/-)( I + 2*(Q(X)/P(X)) ),
 !     COMBINED WITH SCALING-AND-SQUARING.
 !
 !-----ARGUMENTS---------------------------------------------------------!
 !
-!     IDEG      : (INPUT) THE DEGRE OF THE DIAGONAL PADE TO BE USED.
+!     IDEG      : (INPUT) THE DEGREE OF THE DIAGONAL PADE TO BE USED.
 !                 A VALUE OF 6 IS GENERALLY SATISFACTORY.
 !
 !     M         : (INPUT) ORDER OF H.
@@ -35,7 +35,7 @@
 !                     <0 - PROBLEM
 !
 !-----------------------------------------------------------------------!
-!     ROGER B. SIDJE (RBS@MATHS.UQ.EDU.AU)
+!     ROGER B. SIDJE (RBS@MATHS.UQ.EDU.AU) - 'RBS'
 !     EXPOKIT: SOFTWARE PACKAGE FOR COMPUTING MATRIX EXPONENTIALS.
 !     ACM - TRANSACTIONS ON MATHEMATICAL SOFTWARE, 24(1):130-156, 1998
 !-----------------------------------------------------------------------!
@@ -43,15 +43,17 @@
 !     TO COMPUTE THE EXPONENTIAL OF A MATRIX WITH TOO LARGE ELEMENTS.
 !
 !     1) NIELS RODE KRISTENSEN, TECHNICAL UNIVERSITY OF DENMARK, 2000
-!     2) ANDREAS S. CHRISTENSEN,TECHNICAL UNIVERSITY OF DENMARK, 2006 
+!     2) ANDREAS S. CHRISTENSEN,TECHNICAL UNIVERSITY OF DENMARK, 2006
 !     3) SØREN KLIM, IMM-DTU, 2007
 !-----------------------------------------------------------------------!
 !
+      INTEGER  LWSP, NS, IPIV(M)
+      DOUBLE PRECISION WSP(4*M*M+IDEG+1)
       INTEGER MM,I,J,K,IH2,IP,IQ,IUSED,IFREE,IODD,ICOEF,IPUT,IGET
       DOUBLE PRECISION HNORM,SCALE,SCALE2,CP,CQ
 
+! "External" routines:
       INTRINSIC INT,ABS,DBLE,LOG,MAX
-
 !---  CHECK RESTRICTIONS ON INPUT PARAMETERS ...
       MM = M*M
       IFLAG = 0
@@ -79,7 +81,7 @@
       ENDDO
 
 !
-!---  SCALING: SEEK NS SUCH THAT ||T*H/2^NS|| < 1/2; 
+!---  SCALING: SEEK NS SUCH THAT ||T*H/2^NS|| < 1/2;
 !     AND SET SCALE = T/2^NS ...
 !
 
@@ -93,8 +95,9 @@
          HNORM = MAX( HNORM,WSP(I) )
       ENDDO
       HNORM = ABS( T*HNORM )
-      IF ( HNORM.EQ.0.0D0 ) STOP 'ERROR - NULL H IN INPUT OF DGPADM.'
-      NS = MAX( 0,INT(LOG(HNORM)/LOG(2.0D0))+2 )
+      IF (HNORM .EQ. 0.D0)
+     +     CALL RExit('ERROR - NULL H IN INPUT OF DGPADM.')
+      NS = MAX(0, INT(LOG(HNORM)/LOG(2.))+2)
       SCALE = T / DBLE(2**NS)
       SCALE2 = SCALE*SCALE
 !
@@ -155,7 +158,7 @@
       ENDIF
       CALL DAXPY( MM, -1.0D0,WSP(IP),1, WSP(IQ),1 )
       CALL DGESV( M,M, WSP(IQ),M, IPIV, WSP(IP),M, IFLAG )
-      IF ( IFLAG.NE.0 ) STOP 'PROBLEM IN DGESV (WITHIN DGPADM)'
+      IF ( IFLAG.NE.0 ) CALL RWarn ('PROBLEM IN DGESV (WITHIN DGPADM)')
       CALL DSCAL( MM, 2.0D0, WSP(IP), 1 )
       DO J = 1,M
          WSP(IP+(J-1)*(M+1)) = WSP(IP+(J-1)*(M+1)) + 1.0D0
@@ -163,26 +166,23 @@
       IPUT = IP
       IF ( NS.EQ.0 .AND. IODD.EQ.1 ) THEN
          CALL DSCAL( MM, -1.0D0, WSP(IP), 1 )
-         GOTO 200
+      ELSE
+!---  		SQUARING : EXP(T*H) = (EXP(T*H))^(2^NS) ...
+!
+         IODD = 1
+         DO K = 1,NS
+            IGET = IODD*IP + (1-IODD)*IQ
+            IPUT = (1-IODD)*IP + IODD*IQ
+            CALL DGEMM( 'N','N',M,M,M, 1.0D0,WSP(IGET),M, WSP(IGET),M,
+     .           0.0D0,WSP(IPUT),M )
+            IODD = 1-IODD
+         ENDDO
       ENDIF
-!
-!---  SQUARING : EXP(T*H) = (EXP(T*H))^(2^NS) ...
-!
-      IODD = 1
-      DO K = 1,NS
-         IGET = IODD*IP + (1-IODD)*IQ
-         IPUT = (1-IODD)*IP + IODD*IQ
-         CALL DGEMM( 'N','N',M,M,M, 1.0D0,WSP(IGET),M, WSP(IGET),M,
-     .                0.0D0,WSP(IPUT),M )
-         IODD = 1-IODD
-      ENDDO
- 200  CONTINUE
-      IEXPH = IPUT
-      
+
 !---  COPY EXP(H*T) into H
       DO I= 1,M
          DO J=1,M
-            H(I,J) = WSP(IEXPH +(I-1) + (J-1)*M)
+            H(I,J) = WSP(IPUT +(I-1) + (J-1)*M)
          ENDDO
       ENDDO
 !-----------------------------------------------------------------------!

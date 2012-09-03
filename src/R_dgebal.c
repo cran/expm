@@ -25,7 +25,7 @@ SEXP R_dgebal(SEXP x, SEXP type)
     int n, info, nprot = 2;
 
     if (!isNumeric(x) || !isMatrix(x))
-	error(_("invalid argument: not a numeric matrix"));
+	error(_("invalid 'x': not a numeric (classical R) matrix"));
     if (isInteger(x)) {
 	nprot++;
 	x = PROTECT(coerceVector(x, REALSXP));

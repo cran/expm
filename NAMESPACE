@@ -1,13 +1,15 @@
 ### C code
 useDynLib(expm, .registration = TRUE)
 
-importFrom("Matrix", Schur, norm,# << only these two are really needed
-           Matrix)# <- only in  Schur(Matrix(.))
+importFrom("Matrix", Schur, norm,
+	   solve,# <- for expm.Higham08(*, balancing=FALSE)
+           rowSums, colSums,# e.g. in expm.s.Pade.s
+	   Matrix)# <- only in	Schur(Matrix(.))
 
 ### Exports
-export(expm)
+export(expm, expAtv)
 export("%^%")
-export(dgebal)
+export(balance, dgebal)# dgebal() should become deprecated -- see R/dgebal.R and ./TODO
 export(logm)
 
 ## From Michael Stadelmann's (ETH Zurich) Master Thesis : ------------

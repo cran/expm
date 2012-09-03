@@ -28,7 +28,7 @@ c	> dyn.load("matrexp.so")
 c	> .C("matrexp_",as.double(runif(9)),
 c            as.integer(3),as.integer(0),as.integer(8))
 c
-c       (This is all done automatically in the R package "mexp".)
+c       (This is all done automatically in the R package 'expm'.)
 c
       subroutine matrexp(a, n, ntaylor, npade, accuracy)
 

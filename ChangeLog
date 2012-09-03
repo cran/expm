@@ -1,3 +1,31 @@
+2011-11-08  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/balance.Rd: use new name balance() instead of dgebal()
+	* R/balance.R:
+
+2011-10-28  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/matexp.f (matexpRBS): do not call STOP ..
+	* NAMESPACE: import rowSums from Matrix (because of its
+	sparseMatrix method).
+	* R/expm.R (expm): auto-coerce sparse matrices to dense, when
+	"needed".
+
+2011-10-27  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/expm_vec.R (expAtv): finally add the functionality for
+	'exp(A*t) %*% v' Ravi had translated from EXPOKIT in August.
+
+2011-08-27  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/expm.R (expm): add new method "PadeRBS" (Roger B. Sidje),
+	interfacing to the corresponding Fortran code.
+	* src/init.c, src/expm.h: also namespace-ify the Fortran symbols.
+
+2011-08-26  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* NAMESPACE: also import solve() from Matrix, for sparse expm()
+
 2011-03-30  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 0.98-4

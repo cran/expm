@@ -25,15 +25,6 @@ nilA3 <- function(x,y,z) {
 relErr <- function(target, current)
     mean(abs(target - current)) / mean(abs(target))
 
-
-re.nilA3 <- function(xyz, EXPM)
-{
-### TODO:  allow several kinds of EXPM() simultaneously (for same 'r')
-    EXPM <- match.fun(EXPM)
-    r <- do.call(nilA3, as.list(xyz))
-    relErr(r$expA, EXPM(r$A))
-}
-
 facMat <- function(n, R_FUN, ev = R_FUN(n), M = rMat(n, R_FUN = R_FUN))
 {
     ## Purpose: Construct random matrix x of which we "know" expm(x)
@@ -55,14 +46,6 @@ facMat <- function(n, R_FUN, ev = R_FUN(n), M = rMat(n, R_FUN = R_FUN))
     list(A    = M %*% (ev      * iM),
          expA = M %*% (exp(ev) * iM))
 }
-
-re.facMat <- function(n, EXPMlist, rFUN = rnorm, ...)
-{
-    stopifnot(is.list(EXPMlist))
-    r <- facMat(n, rFUN, ...)
-    sapply(EXPMlist, function(EXPM) relErr(r$expA, EXPM(r$A)))
-}
-
 
 ### --- The 2x2 example with bad condition , see A3 in ./ex2.R
 m2ex3 <- function(eps = 0) {
@@ -86,12 +69,6 @@ m2ex3 <- function(eps = 0) {
          expA = exp(-1) *
          rbind(c( ch.e,  sh.e/eps),
                c(sh.e*eps, ch.e  )))
-}
-re.m2ex3 <- function(eps, EXPMlist)
-{
-    stopifnot(is.list(EXPMlist))
-    r <- m2ex3(eps)
-    sapply(EXPMlist, function(EXPM) relErr(r$expA, EXPM(r$A)))
 }
 
 ###---

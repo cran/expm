@@ -1,7 +1,8 @@
 library(Matrix)
 library(expm)
 
-source(system.file("test-tools.R", package = "expm"))## -> assertError(), rMat()
+source(system.file("test-tools.R", package = "expm"), keep.source=FALSE)
+doExtras
 
 tst.sqrtm <- function(m, tol = 1e-12, zap.Im.tol = 1e-10) {
     r.m <- sqrtm(m)## should now work
@@ -30,7 +31,7 @@ all.equal(l.L2, lL2, tol=0)# 5.64 e-14 (32-bit *and* 64-bit)
 all.equal(l.L3, lL3, tol=0)# 2.40 e-15   (ditto)
 stopifnot(all.equal(l.L2, lL2, tol= 1000e-16),
           all.equal(l.L3, lL3, tol=   80e-16))
-
+showProc.time()
 
 ### --------- More & larger randomly generated examples : -----------------
 set.seed(101)
@@ -44,14 +45,15 @@ S <- crossprod(A)
 all.equal(S, sqrtm(S) %*% sqrtm(S), tol=0)
 ## "Mean relative difference: 2.26885e-15"
 stopifnot(all.equal(S, sqrtm(S) %*% sqrtm(S), tol=1e-14))
+showProc.time()
 
 set.seed(3)
 
 ## n = 50 is already "too" slow (well: logm.Higham08(.) needs 2.2 sec
 ## --> CPU measurements below
-for(n in c(2:5, 10:11, 30)) {
+for(n in c(2:5, 10:11, if(doExtras) 30)) {
     cat("n = ",n,": ")
-    for(kk in 1:30) {
+    for(kk in seq_len(if(doExtras) 30 else 10)) {
         ## Testing  logm()
         EA <- expm.Higham08(A <- matrix(round(rnorm(n^2),2), n,n))
         stopifnot(all.equal(EA, expm.Higham08(logm.Higham08(EA)), tol=1e-12))
@@ -65,13 +67,20 @@ for(n in c(2:5, 10:11, 30)) {
     cat("\n")
 }
 
-cat('Time elapsed: ', (p1 <- proc.time()),'\n') # for ``statistical reasons''
+showProc.time()
+
 
 ### CPU-measurements for  logm()
 options(verbose = FALSE)# printing costs ..
 set.seed(5)
-n <- 50
-sim <- 32
+if(doExtras) {
+    n <- 50
+    sim <- 32
+} else {
+    n <- 21
+    sim <- 8
+}
+
 cpuT <- numeric(sim)
 for(k in seq_len(sim)) {
     EA <- expm.Higham08(A <- matrix(rnorm(n^2), n,n))
@@ -84,4 +93,5 @@ summary(cpuT)
 ##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
 ##   1.794   2.249   2.389   2.388   2.515   2.831
 
-cat('Time elapsed: ',(p2 <- proc.time())-p1,'\n') # for ``statistical reasons''
+showProc.time()
+

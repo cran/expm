@@ -31,11 +31,11 @@ expm.Higham08 <- function(A, balancing=TRUE)
     ##---------STEP 0: BALANCING------------------------------------------------
     ## if Balancing is designated, Balance the Matrix A
     ## This Balancing Code is adapted from the R-Foge expm Package,
-    ## which is needed for the dgebal function
+    ## which is needed for the balance function
 
     if (balancing) {
-        baP <- dgebal(A,     "P")
-        baS <- dgebal(baP$z, "S")
+	baP <- balance(A,     "P")# -> error for non-classical matrix  -- "FIXME": balance()
+	baS <- balance(baP$z, "S")
         A <- baS$z
     }
 

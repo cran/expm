@@ -11,7 +11,7 @@
 x \%^\% k
 }
 \arguments{
-  \item{x}{a square \code{\link{matrix}}}.
+  \item{x}{a square \code{\link{matrix}}.}
   \item{k}{an integer, \eqn{k \ge 0}{k >= 0}.}
 }
 \details{

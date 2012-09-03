@@ -11,9 +11,9 @@
 }
 \usage{
 expm(x, method = c("Higham08.b", "Higham08",
-                   "Ward77", "Pade", "Taylor", "PadeO", "TaylorO",
+                   "Ward77", "PadeRBS", "Pade", "Taylor", "PadeO", "TaylorO",
                    "R_Eigen", "R_Pade", "R_Ward77", "hybrid_Eigen_Ward"),
-     order = 8, trySym = TRUE, tol = .Machine$double.eps,
+     order = 8, trySym = TRUE, tol = .Machine$double.eps, do.sparseMsg = TRUE,
      preconditioning = c("2bal", "1bal", "buggy"))
 }
 \arguments{
@@ -41,7 +41,7 @@ expm(x, method = c("Higham08.b", "Higham08",
   \item{order}{an integer, the order of approximation to be used, for
     the "Pade" and "Taylor" methods.  The best value for this depends on
     machine precision (and slightly on \code{x}) but for the current
-    double precision arithmetic, one recommendation %% and Matlab !!!
+    double precision arithmetic, one recommendation (and the Matlab implementations)
     uses \code{order = 6} unconditionally;\cr
     %% NOTA BENE:  Matlab uses order = 6  !!!
     our default, \code{8}, is from Ward(1977, p.606)'s recommendation.
@@ -51,6 +51,8 @@ expm(x, method = c("Higham08.b", "Higham08",
     symmetric matrices.}
   \item{tol}{a given tolerance used to check if \code{x} is
     computationally singular when \code{method = "hybrid_Eigen_Ward"}.}
+  \item{do.sparseMsg}{logical allowing a message about sparse to dense
+    coercion; setting it \code{FALSE} suppresses that message.}
   \item{preconditioning}{a string specifying which implementation of
     Ward(1977) should be used when \code{method = "Ward77"}.
     %%% FIXME explain more
@@ -62,8 +64,14 @@ expm(x, method = c("Higham08.b", "Higham08",
     exp(M) = I + M + M^2/2! + M^3/3! + \dots}
 
   For the "Pade" and "Taylor" methods, there is an \code{"accuracy"}
-  attribute of the result. It is an upper bound for the L2 norm of the
+  attribute of the result.  It is an upper bound for the L2 norm of the
   Cauchy error \code{expm(x, *, order + 10) - expm(x, *, order)}.
+
+  Currently, only algorithms which are \emph{\dQuote{\R-code only}} accept \emph{sparse}
+  matrices (see the
+  \code{\link[Matrix:sparseMatrix-class]{sparseMatrix}} class in package
+  \pkg{Matrix}), i.e., currently only \code{"R_Eigen"} and
+  \code{"Higham08"}.
 }
 \value{
   The matrix exponential of \code{x}.
@@ -71,6 +79,10 @@ expm(x, method = c("Higham08.b", "Higham08",
 \seealso{
   The package vignette for details on the algorithms and calling the
   function from external packages.
+
+  \code{\link{expAtv}(A,v,t)} computes \eqn{e^{At} v} (for scalar
+  \eqn{t} and \eqn{n}-vector \eqn{v}) \emph{directly} and more
+  efficiently than computing \eqn{e^{At}}.
 }
 \author{
   The \code{"Ward77"} method:\cr
@@ -78,6 +90,9 @@ expm(x, method = c("Higham08.b", "Higham08",
   Dutang, based on code translated by Doug Bates and Martin Maechler
   from the implementation of the corresponding Octave function
   contributed by A. Scottedward Hodel \email{A.S.Hodel@eng.auburn.edu}.
+
+  The \code{"PadeRBS"} method:\cr
+  Roger B. Sidje, see the EXPOKIT reference.
 
   The \code{"PadeO"} and  \code{"TaylorO"} methods:\cr
   Marina Shapira (U Oxford, UK) and David Firth (U Warwick, UK);
@@ -96,6 +111,10 @@ expm(x, method = c("Higham08.b", "Higham08",
   Ward, R. C. (1977).  Numerical computation
   of the matrix exponential with accuracy estimate.
   \emph{SIAM J. Num. Anal.} \bold{14}, 600--610.
+
+  Roger B. Sidje (1998).
+  EXPOKIT: Software package for computing matrix exponentials.
+  ACM - Transactions on Mathematical Software \bold{24}(1), 130--156.
 
   Moler, C and van Loan, C (2003).  Nineteen dubious ways to compute
   the exponential of a matrix, twenty-five years later.
@@ -128,15 +147,13 @@ expm(test1, method="Pade")
 ## Compare with the naive "R_Eigen" method:
 try(
 expm(test1, method="R_Eigen")
-) ## now gives an error from solve !
-##
-## older result was
+) ## platform depently, sometimes gives an error from solve
+## or is accurate or one older result was
 ##                   [,1]                [,2]               [,3]
 ##[1,] 147.86662244637003  88.500223574029647 103.39983337000028
 ##[2,] 127.78108552318220 117.345806155250600  90.70416537273444
 ##[3,] 127.78108552318226  90.384173332156763 117.66579819582827
 ## -- hopelessly inaccurate in all but the first column.
-##
 ##
 ## ----------------------------
 ## Test case 2 from Ward (1977)
