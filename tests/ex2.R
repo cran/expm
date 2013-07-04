@@ -28,7 +28,7 @@ stopifnot(all.equal(mA1,
                              4.0012030182399, 2.8845155413486, 4.0012030182399,
                              5.5778402926177, 3.1930144369526, 5.7131755758543),
                            3, 3),
-                           check.attrib = FALSE, tol = 1e-11))
+                           check.attributes = FALSE, tol = 1e-11))
 
 
 ## --- 2 ---
@@ -43,7 +43,7 @@ A2
 stopifnot(all.equal(mA2,
                     matrix(c(-0.099574136735459, -0.199148273470915,
                               0.074680602551593 , 0.149361205103183),
-                           2, 2), check.attrib = FALSE, tol = 1e-11))
+                           2, 2), check.attributes = FALSE, tol = 1e-11))
 mA2.T <- expm(A2, method = "Taylor")
 stopifnot(all.equal(mA2, mA2.T, tol=1e-10))
 all.equal(mA2, mA2.T, tol=1e-14)#-> 3.2e-12  {MM: I think that's pretty good}
@@ -57,7 +57,7 @@ assertError(expm(mA3, method="R_Eigen"))
 em1 <- exp(-1)
 stopifnot(all.equal(mA3, ## and the exact solution:
                     matrix(c(em1, 0, em1, em1), 2, 2),
-                    check.attrib = FALSE, tol = 1e-14))
+                    check.attributes = FALSE, tol = 1e-14))
 
 ## using 'eps' instead of 0 :
 ## ---> see m2ex3() etc in ./exact-ex.R
@@ -76,7 +76,7 @@ IV <- rbind(c( sqrt(3/4), sqrt(3/8)),
 stopifnot(all.equal(V %*% IV, diag(2)))
 em.true <- V %*% (exp(d) * IV)
 stopifnot(all.equal(em.true, expm::expm(m)),
-          all.equal(em.true, expm::expm(m,"Pade"), check.attrib=FALSE))
+          all.equal(em.true, expm::expm(m,"Pade"), check.attributes=FALSE))
 
 ###----------- expAtv() ----------------
 

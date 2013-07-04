@@ -1,5 +1,5 @@
 e75d696dd9406db6356bab0812ca6b7f *ChangeLog
-552208491d03ae2f5606f7a8b6c6bcd6 *DESCRIPTION
+51a9ae69a30dd0009078343b2f3a6520 *DESCRIPTION
 1391979426cf683092dcfc8737756a47 *NAMESPACE
 9e93611ffa0c58d5d96919ff20dfb32c *R/balance.R
 7eeb8306997c7e731b68b39b025fda99 *R/expm.R
@@ -52,8 +52,8 @@ f9fd8eaa12f12fb5370dab1a62a23c23 *src/matpow.c
 3fd6e0d41e853aad802336acece3ec34 *src/mexp-common.f
 a22fd1e243d0d2e96802f551a4ff7f28 *tests/Frechet-test.R
 334a7196ca6f67f83acf2f324bd0de79 *tests/bal-ex.R
-cc039a17ee5373796a3d8b45ba24d4e9 *tests/ex.R
-195224445bd1706757f2e0122e24067f *tests/ex2.R
+0ca55007131d09f7a8b1efd2f7067a10 *tests/ex.R
+24e05ad1b6669ad1b3615704d15858da *tests/ex2.R
 cdb18d26b1e9263c330a705eddea0179 *tests/exact-ex.R
 775de117ad4099c44d16522f2725877f *tests/expm-Cond.R
 cf1b42132932b087c822514863892f0b *tests/log+sqrt.R
