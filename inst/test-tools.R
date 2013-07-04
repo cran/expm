@@ -20,28 +20,36 @@ expm.t.identity <- function(x, method,
 
 
 ### This is similar to Matrix'  example(spMatrix) :
-##
-rSpMatrix <- function(nrow, ncol = nrow, nnz,
-		      rand.x = function(n) round(100 * rnorm(nnz)))
+##' @title random sparse matrix
+##' @param nrow,ncol dimension
+##' @param ncol
+##' @param nnz number of non-zero entries
+##' @param density
+##' @param rand.x random number generator for 'x' slot
+##' @return an  nrow x ncol  matrix
+##' @author Martin Maechler, 14.-16. May 2007
+rSpMatrix <- function(nrow, ncol = nrow, density, nnz = density*nrow*ncol,
+                      sparse = FALSE,
+		      rand.x = function(n) round(100 * rnorm(n)))
 {
-    ## Purpose: random sparse matrix
-    ## --------------------------------------------------------------
-    ## Arguments: (nrow,ncol): dimension
-    ##		nnz  :	number of non-zero entries
-    ##	       rand.x:	random number generator for 'x' slot
-    ## --------------------------------------------------------------
-    ## Author: Martin Maechler, Date: 14.-16. May 2007
     stopifnot((nnz <- as.integer(nnz)) >= 0,
 	      nrow >= 0, ncol >= 0,
 	      nnz <= nrow * ncol)
-##     spMatrix(nrow, ncol,
-##		i = sample(nrow, nnz, replace = TRUE),
-##		j = sample(ncol, nnz, replace = TRUE),
-##		x = rand.x(nnz))
-    m <- matrix(0, nrow, ncol)
-    m[cbind(i = sample(nrow, nnz, replace = TRUE),
-	    j = sample(ncol, nnz, replace = TRUE))] <- rand.x(nnz)
-    m
+    xx <- rand.x(nnz)
+    ## unfortunately, the two resulting matrices might *not* be identical:
+    ## because the x's of repeated  (i,j)'s will be *added* for sparse, but not dense:
+    ## set.seed(11); m <- rSpMatrix(12, density = 1/10)
+    ## set.seed(11); M <- rSpMatrix(12, density = 1/10, sparse=TRUE)
+    if(sparse)
+	spMatrix(nrow, ncol,
+		 i = sample(nrow, nnz, replace = TRUE),
+		 j = sample(ncol, nnz, replace = TRUE), x = xx)
+    else {
+	m <- matrix(0, nrow, ncol)
+	m[cbind(i = sample(nrow, nnz, replace = TRUE),
+		j = sample(ncol, nnz, replace = TRUE))] <- xx
+	m
+    }
 }
 
 zeroTrace <- function(m) {

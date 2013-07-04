@@ -21,12 +21,14 @@ expAtv <- function(A, v, t=1,
                    method = "Sidje98",
                    ## currently only one method, with these arguments:
                    ## FIXME argMeth=list( ... )
+                   rescaleBelow = 1e-6,
                    tol=1e-7, btol = 1e-7, m.max = 30, mxrej = 10,
 		   verbose = getOption("verbose"))
 {
     ## R translation:  Ravi Varadhan, Johns Hopkins University
     ##		   "cosmetic", apply to sparse A: Martin Maechler, ETH Zurich
-    stopifnot(length(v) == (n <- nrow(A)), m.max >= 2)
+    if(length(d <- dim(A)) != 2) stop("'A' is not a matrix") # <- also for sparseMatrix
+    stopifnot(length(v) == (n <- d[1]), m.max >= 2)
     if(n <= 1) {
 	if(n == 1) return(list(eAtv = exp(A*t)*v, error = 0, nstep = 0L, n.reject = 0L))
 	stop("nrow(A) must be >= 1")
@@ -37,15 +39,20 @@ expAtv <- function(A, v, t=1,
     gamma <- 0.9
     delta <- 1.2
     ##-</FIXME>
-    mb <- m
+    nA <- norm(A, "I")
+    if(nA < rescaleBelow) { ## rescaling, by MMaechler, needed for small norms
+	A <- A/nA
+	t <- t*nA
+	nA <- 1
+    }
+    rndoff <- nA * .Machine$double.eps
+
     t_1 <- abs(t)
     sgn <- sign(t)
     t_now <- 0
     s_error <- 0
-    nA <- norm(A, "I")
-    rndoff <- nA * .Machine$double.eps
-
     k1 <- 2
+    mb <- m
     xm <- 1/m
     beta <- sqrt(sum(v*v))# = norm(v) = |\ v ||
     fact <- (((m+1)/exp(1))^(m+1))*sqrt(2*pi*(m+1))
@@ -91,13 +98,15 @@ expAtv <- function(A, v, t=1,
 	    mx <- mb + k1; imx <- seq_len(mx) # = 1:mx
 	    if(verbose) cat(sprintf("	inner while: k1=%d -> mx=%d\n",
 				    k1, mx))
-	    F <- expm(sgn * t_step * H[imx,imx])
+	    F <- expm(sgn * t_step * H[imx,imx, drop=FALSE])
 	    if (k1 == 0) {
 		err_loc <- btol
 		break
 	    } else {
 		phi1 <- abs(beta * F[m+1,1])
 		phi2 <- abs(beta * F[m+2,1] * avnorm)
+		if(is.nan(phi1) || is.nan(phi2))
+		    stop("NaN phi values; probably overflow in expm()")
 		if (phi1 > 10*phi2) {
 		    err_loc <- phi2
 		    xm <- 1/m
@@ -122,7 +131,7 @@ expAtv <- function(A, v, t=1,
 	}## end{ while (i.rej < mx..) }
 	n.rej <- n.rej + i.rej
 	mx <- mb + max(0, k1-1); imx <- seq_len(mx) # = 1:mx
-	w <- as.vector(V[, imx] %*% (beta*F[imx,1]))
+	w <- as.vector(V[, imx] %*% (beta*F[imx,1, drop=FALSE]))
 	beta <- sqrt(sum(w*w))
 	t_now <- t_now + t_step
 	t_new <- myRound(gamma * t_step * (t_step*tol/err_loc)^xm)

@@ -1,15 +1,18 @@
 #-*-org-*-
 
-* expm() should work for sparse matrices for more methods
+* TODO expm() should work for sparse matrices for more methods
+  
+* expAtv(A, v, t)
+** TODO should work for *vector* t
+** TODO should implement the new method by  Al-Mohy and Higham (2011),
+   see file:Misc/README  and  file:Misc/expmv/
 
-* expAtv(A, v, t)   should work for *vector* t
+* TODO Implement  Higham (2009)  {we have 2008} :  see file:inst/doc/expm.bib
 
-* Implement  Higham (2009)  {we have 2008} :  see   file:inst/doc/expm.bib
-
-* dgebal() -- now renamed to balance() == Matlab name,
+* TODO dgebal() -- now renamed to balance() == Matlab name,
   *but* add the functionality (available in Matlab) to also return the
   transforming diagonal matrix D --> file:R/balance.R
 
 
-* Rmpfr version possible (s.Pade.s), as soon as solve() for Rmpfr
+* TODO Rmpfr version possible (s.Pade.s), as soon as solve() for Rmpfr
 

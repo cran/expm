@@ -293,8 +293,7 @@ expmFrechet <- function(A,E, method = c("SPS","blockEnlarge"), expm = TRUE)
     ##-----------STEP 1 & STEP 2: SCALING & PADÉ APPROXIMATION-------------------
 
     ## Informations about the given matrix
-    stopifnot(require("Matrix"))        # just for this:
-    nA  <- norm(A ,"1")
+    nA  <- norm(A ,"1") ## == Matrix::norm
 
     n <- nrow(A)# == ncol(A) .. tested "in the caller"
     ## try to remain in the same matrix class system:
