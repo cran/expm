@@ -55,6 +55,8 @@ expAtv <- function(A, v, t=1,
     mb <- m
     xm <- 1/m
     beta <- sqrt(sum(v*v))# = norm(v) = |\ v ||
+    if(beta == 0) ## border case: v is all 0, and the result is too
+	return(list(eAtv = v, error = 0L, nstep = 0L, n.reject = 0L))
     fact <- (((m+1)/exp(1))^(m+1))*sqrt(2*pi*(m+1))
     myRound <- function(tt) {
 	s <- 10^(floor(log10(tt)) - 1)

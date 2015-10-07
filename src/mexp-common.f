@@ -40,9 +40,11 @@ c	the minus of a matrix
       double precision x(m,m),y(m,m)
 
       integer i,j
-      do 10 i=1,m
-        do 10 j=1,m
- 10        y(i,j)=-x(i,j)
+      do i=1,m
+         do j=1,m
+            y(i,j)=-x(i,j)
+         enddo
+      enddo
       return
       end
 
@@ -111,8 +113,9 @@ c	adding 2 vectors			z[] := x[] + y[]
       double precision x(m),y(m),z(m)
 
       integer i
-      do 10 i=1,m
- 10      z(i)=x(i)+y(i)
+      do i=1,m
+         z(i)=x(i)+y(i)
+      enddo
       return
       end
 
@@ -137,8 +140,9 @@ c	linear combination of 2 vectors		z[] := x[] + a* y[]
       double precision a, x(m),y(m),z(m)
 
       integer i
-      do 10 i=1,m
- 10      z(i)=x(i)+a*y(i)
+      do i=1,m
+         z(i)=x(i)+a*y(i)
+      enddo
       return
       end
 
@@ -181,8 +185,9 @@ c	factorial function
       integer i
 
       nfact=1
-      do 10 i=1,n
- 10      nfact=nfact*i
+      do  i=1,n
+         nfact=nfact*i
+      enddo
       return
       end
 

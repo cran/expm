@@ -1,22 +1,20 @@
-##------OVERVIEW----------------------------------------------------------------
 
-#Input:  A; nxn Matrix
-#Output: e^A Matrixeponential; nxn Matrix
-
-
-#Function for Calculation of e^A with the Scaling&Squaring Method with Balancing
-
-# Step 0:    Balancing
-# Step 1:    Scaling
-# Step 2:    Padé-Approximation
-# Step 3:    Squaring
-# Step 4:    Reverse Balancing
-
-#R-Implementation of Higham's Algorithm from the Book
-#"Functions of Matrices - Theory and Computation", Chapter 10, Algorithm 10.20
-
-
-##-------CODE-------------------------------------------------------------------
+##' Calculation of e^A with the Scaling & Squaring Method with Balancing
+##' according to Higham (2008)
+##'
+##' R-Implementation of Higham's Algorithm from the Book (2008)
+##' "Functions of Matrices - Theory and Computation", Chapter 10, Algorithm 10.20
+##' Step 0:    Balancing
+##' Step 1:    Scaling
+##' Step 2:    PadÃ©-Approximation
+##' Step 3:    Squaring
+##' Step 4:    Reverse Balancing
+##'
+##' @title Matrix Exponential with Scaling & Squaring and Balancing
+##' @param A nxn Matrix
+##' @param balancing logical indicating if balancing (step 0) should be applied
+##' @return e^A Matrixeponential; nxn Matrix
+##' @author Martin Maechler
 expm.Higham08 <- function(A, balancing=TRUE)
 {
     ## Check if A is square
@@ -29,9 +27,7 @@ expm.Higham08 <- function(A, balancing=TRUE)
     ## else  n >= 2 ... non-trivial case : -------------
 
     ##---------STEP 0: BALANCING------------------------------------------------
-    ## if Balancing is designated, Balance the Matrix A
-    ## This Balancing Code is adapted from the R-Foge expm Package,
-    ## which is needed for the balance function
+    ## if balancing is asked for, balance the matrix A
 
     if (balancing) {
 	baP <- balance(A,     "P")# -> error for non-classical matrix  -- "FIXME": balance()
@@ -40,7 +36,7 @@ expm.Higham08 <- function(A, balancing=TRUE)
     }
 
 
-    ##--------STEP 1 and STEP 2 SCALING & PADÉ APPROXIMATION--------------------
+    ##--------STEP 1 and STEP 2 SCALING & PADÃ‰ APPROXIMATION--------------------
 
     ## Informations about the given matrix
     nA <- Matrix::norm(A, "1")
@@ -48,7 +44,7 @@ expm.Higham08 <- function(A, balancing=TRUE)
     ## try to remain in the same matrix class system:
     I <- if(is(A,"Matrix")) Diagonal(n) else diag(n)
 
-    ## If the norm is small enough, use the Padé-Approximation (PA) directly
+    ## If the norm is small enough, use the PadÃ©-Approximation (PA) directly
     if (nA <= 2.1) {
 
     	t <- c(0.015, 0.25, 0.95, 2.1)
@@ -61,7 +57,6 @@ expm.Higham08 <- function(A, balancing=TRUE)
     		   c(17297280,8648640,1995840,277200,25200,1512,56,1,0,0),
     		   c(17643225600,8821612800,2075673600,302702400,30270240,
     		     2162160,110880,3960,90,1))
-
         A2 <- A %*% A
     	P <- I
     	U <- C[l,2]*I
@@ -134,4 +129,22 @@ expm.Higham08 <- function(A, balancing=TRUE)
     }
 
     X
+}
+
+
+
+##' Matrix Exponential -- using Al-Mohy and Higham (2009)'s algorithm
+##'	 --> ../src/matexp_MH09.c
+##' @param x square matrix
+##' @param p the order of the Pade' approximation, 1 <= p <= 13.  The
+##' default, 6, is what \file{expokit} uses.
+expm.AlMoHi09 <- function(x, p = 6)
+{
+    d <- dim(x)
+    if(length(d) != 2 || d[1] != d[2]) stop("'x' must be a square matrix")
+    stopifnot(length(p <- as.integer(p)) == 1)
+    if (p < 1 || p > 13)
+        stop("Pade approximation order 'p' must be between 1 and 13.")
+
+    .Call(R_matexp_MH09, x, p)
 }

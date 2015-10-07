@@ -1,6 +1,5 @@
 \name{logm}
 \alias{logm}
-\alias{logm.Higham08}
 \title{Matrix Logarithm}
 \description{
   This function computes the (principal) matrix logarithm of a square matrix.
@@ -13,9 +12,6 @@
 logm(x, method = c("Higham08", "Eigen"),
 %      order = 8, trySym = TRUE,
      tol = .Machine$double.eps)
-
-%% FIXME? drop this eventually:
-logm.Higham08(x)
 }
 \arguments{
   \item{x}{a square matrix.}
@@ -75,6 +71,13 @@ expm(logm(m))
 D0 <- diag(x=c(1, 0.))
 (L. <- logm(D0))
 stopifnot( all.equal(D0, expm(L.)) )
+
+## A matrix for which clearly no logm(.) exists:
+(m <- cbind(1:2, 1))
+(l.m <- logm(m)) ## all NA
+stopifnot(is.na(l.m))
+## The "Eigen" method  ``works''  but wrongly :
+expm(logm(m, "Eigen"))
 }
 \keyword{algebra}
 \keyword{math}

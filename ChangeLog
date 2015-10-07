@@ -1,3 +1,20 @@
+2015-10-06  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* R/balance.R (balance): also add 'job = "N"' (i.e., 'none') option.
+
+	* src/R_dgebal.c (R_dgebal): catch +/-Inf in matrix avoiding
+	infinite loop in Lapack's DGEBAL(); thanks to Terry Thernau.
+
+2014-09-11  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* NAMESPACE: no longer export logm.Higham08
+	* R/expm2.R (expm.AlMoHi09): new  expm(x, method = "AlMohy-Hi09")
+	* src/matexp_MH09.c: thanks to Drew Schmidt.
+
+2014-09-03  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* src/matpow.c: need to carefully REPROTECT x_
+
 2011-11-08  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* man/balance.Rd: use new name balance() instead of dgebal()

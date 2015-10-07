@@ -68,7 +68,7 @@ logm.Higham08 <- function(x) {
     ev <- Sch.x@EValues
     if(getOption("verbose") && any(abs(Arg(ev) - pi) < 1e-7))
 ## Let's see what works: temporarily *NOT* stop()ping :
-        message("logm.H..(): 'x' has negative real eigenvalues; probably ok")
+	message(sprintf("'x' has negative real eigenvalues; maybe ok for %s", "logm()"))
     n <- Sch.x@Dim[1]
     Tr <- as.matrix(Sch.x@T)
     Q  <- as.matrix(Sch.x@Q)
@@ -81,6 +81,14 @@ logm.Higham08 <- function(x) {
     ## NB: The following could loop forever, e.g., for  logm(Diagonal(x=1:0))
     repeat{
         t <- norm(Tr - I, "1") # norm(x, .) : currently x is coerced to dgeMatrix
+	if(is.na(t)) {
+	    warning(sprintf(ngettext(k,
+				     "NA/NaN from %s after %d step.\n",
+				     "NA/NaN from %s after %d steps.\n"),
+			    " || Tr - I || ", k),
+		    "The matrix logarithm may not exist for this matrix.")
+	    return(array(t, dim=dim(Tr)))
+	}
         if (t < thMax) {
             ## FIXME: use findInterval()
             j2 <- which.max( t <= theta)
@@ -91,10 +99,9 @@ logm.Higham08 <- function(x) {
             }
         } else if(k > 20 && abs(t.o - t) < 1e-7*t) {
             ##
-            warning("Inverse scaling did not work (t =",
-                    format(t), ");\n",
-                    "maybe logm(x) is not defined for this 'x'.\n",
-                    "Setting m = 3 arbitrarily.")
+	    warning(sprintf("Inverse scaling did not work (t = %g).\n", t),
+		    "The matrix logarithm may not exist for this matrix.",
+		    "Setting m = 3 arbitrarily.")
             m <- 3
             break
         }
@@ -104,7 +111,7 @@ logm.Higham08 <- function(x) {
         k <- k+1
     }
     if(getOption("verbose"))
-        message("logm.Higham08() -> (k, m) = (", k,",",m,")")
+	message(sprintf("logm.Higham08() -> (k, m) = (%d, %d)", k,m))
 
     ##------ Step 2: Padé-Approximation -----------------------------------------
 
@@ -178,7 +185,13 @@ rootS <- function(UT) {
     for (j in seq_len(n-k)) {
         ij <- R.index[[j]]
 	if (length(ij) == 1) {
-	    ## FIXME(?) : in sqrtm(), we take *complex* sqrt() if needed :
+	    ## Sij <- S[ij,ij]
+	    ## if(Sij < 0)
+	    ##	   ## FIXME(?) : in sqrtm(), we take *complex* sqrt() if needed :
+	    ##	   ## -----  but afterwards  norm(Tr - I, "1") fails with complex
+	    ##	   ## Sij <- complex(real = Sij, imaginary = 0)
+	    ##	   stop("negative diagonal entry -- matrix square does not exist")
+	    ## X[ij,ij] <- sqrt(Sij)
 	    X[ij,ij] <- sqrt(S[ij,ij])
 	}
         else {
@@ -226,6 +239,7 @@ rootS <- function(UT) {
 		X[ii,ij] <- solve(t(X[ii,ii]*I + X[ij,ij]),
 				  as.vector(S[ii,ij] - sumU))
 	    }
+
 	    ## Calculation for	2x1 Blocks
 	    else if (length(ij) == 1 & length(ii) == 2 ) {
 		if (j-i > 1) for (l in(i+1):(j-1)) {

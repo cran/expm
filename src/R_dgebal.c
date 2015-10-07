@@ -26,16 +26,25 @@ SEXP R_dgebal(SEXP x, SEXP type)
 
     if (!isNumeric(x) || !isMatrix(x))
 	error(_("invalid 'x': not a numeric (classical R) matrix"));
-    if (isInteger(x)) {
-	nprot++;
-	x = PROTECT(coerceVector(x, REALSXP));
-    }
     dims = getAttrib(x, R_DimSymbol);
     n = INTEGER(dims)[0];
     if (n != INTEGER(dims)[1])
 	error(_("non-square matrix"));
-
     typnm[0] = ebal_type(CHAR(asChar(type)));
+    if (isInteger(x)) {
+	nprot++;
+	x = PROTECT(coerceVector(x, REALSXP));
+    }
+    else if(n > 0 && typnm[0] == 'S') {
+	/* FIXME: if 'x' contains +/- Inf dgebal() loops infinitely <==> LAPACK "bug"
+	   ----- fix in ..../R/src/modules/lapack/dlapack.f.~dgebal-Inf-patch~
+	   But that does *not* help for external Lapack libraries */
+	double *dx = REAL(x), aMax = 0.; // aMax := max_{i,j} |x[i,j]|
+	for(int i=0; i < n*n; i++)
+	    if(aMax < dx[i]) aMax = dx[i];
+	if(aMax == R_PosInf)
+	    error(_("R_dgebal(*, type=\"S\"): Infinite matrix entry"));
+    }
 
     PROTECT(ans = allocVector(VECSXP, 4));
     PROTECT(nms = allocVector(STRSXP, 4));

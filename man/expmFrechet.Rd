@@ -56,7 +56,7 @@ expmFrechet(A, E, method = c("SPS", "blockEnlarge"), expm = TRUE)
 (A <- cbind(1, 2:3, 5:8, c(9,1,5,3)))
 E <- matrix(1e-3, 4,4)
 (L.AE <- expmFrechet(A, E))
-all.equal(L.AE, expmFrechet(A, E, "block"), tol = 1e-14) ## TRUE
+all.equal(L.AE, expmFrechet(A, E, "block"), tolerance = 1e-14) ## TRUE
 }
 \keyword{algebra}
 \keyword{math}

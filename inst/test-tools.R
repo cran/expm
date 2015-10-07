@@ -15,7 +15,7 @@ expm.t.identity <- function(x, method,
   ## Author: Martin Maechler, Date: 23 Feb 2008, 17:26
     ex <- expm::expm(x   , method=method, ...)
     et <- expm::expm(t(x), method=method, ...)
-    all.equal(t(ex), et, tol = tol, check.attributes = check.attributes)
+    all.equal(t(ex), et, tolerance = tol, check.attributes = check.attributes)
 }
 
 

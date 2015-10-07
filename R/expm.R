@@ -42,9 +42,9 @@ expm.s.Pade.s <- function(x, order, n=nrow(x)) {
 
 expm.methSparse <- c("Higham08", "R_Eigen", "R_Pade")
 ## "FIXME" -- keep this list up-to-date - test by setting  R_EXPM_NO_DENSE_COERCION
-if(getRversion() < "3.1.0") dontCheck <- identity
 
 expm <- function(x, method = c("Higham08.b", "Higham08",
+                    "AlMohy-Hi09",
 		    "Ward77", "PadeRBS", "Pade", "Taylor", "PadeO", "TaylorO",
 		    "R_Eigen", "R_Pade", "R_Ward77", "hybrid_Eigen_Ward"),
 		 order = 8,
@@ -52,13 +52,14 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 		 do.sparseMsg = TRUE,
 		 preconditioning = c("2bal", "1bal", "buggy"))
 {
-    ## some methods work for "matrix" or "Matrix" matrices:
-    stopifnot(is.numeric(x) || is(x, "dMatrix"))
+    ## some methods work for "matrix", "Matrix", or "mpfrMatrix", iff solve(.,.) worked:
+    stopifnot(is.numeric(x) || (isM <- inherits(x, "dMatrix")) || inherits(x, "mpfrMatrix"))
     if(length(d <- dim(x)) != 2) stop("argument is not a matrix")
     if (d[1] != d[2]) stop("matrix not square")
     method <- match.arg(method)
     checkSparse <- !nzchar(Sys.getenv("R_EXPM_NO_DENSE_COERCION"))
-    if(!is.numeric(x) && checkSparse) { # i.e., a "dMatrix"
+    isM <- !is.numeric(x) && isM
+    if(isM && checkSparse) { # i.e., a "dMatrix"
 	if(!(method %in% expm.methSparse) && is(x, "sparseMatrix")) {
 	    if(do.sparseMsg)
 		message("coercing to dense matrix, as required by method ",
@@ -67,10 +68,12 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 	}
     }
     switch(method,
+           "AlMohy-Hi09" = expm.AlMoHi09(x, p = order)
+          ,
 	   "Higham08.b" = expm.Higham08(x, balancing = TRUE)
-	   ,
+	  ,
 	   "Higham08"	= expm.Higham08(x, balancing = FALSE)
-	   ,
+          ,
 	   "Ward77" = {
 	       ## AUTHORS: Christophe Dutang, Vincent Goulet at act ulaval ca
 	       ##	 built on "Matrix" package, built on 'octave' code
@@ -100,7 +103,7 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 	       ## matrix exponential using eigenvalues / spectral decomposition and
 	       ## Ward(1977) algorithm if x is numerically non diagonalisable
                stopifnot(is.matrix(x))
-	       .Call("do_expm_eigen", x, tol)
+	       .Call(do_expm_eigen, x, tol)
 	   },
 	   "R_Pade"= { ## use scaling + Pade + squaring with R code:
 
@@ -187,8 +190,15 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 	       ntaylor <- npade <- 0L
 	       if (substr(method,1,4) == "Pade")
 		   npade <- order else ntaylor <- order
-	       res <- .Fortran(dontCheck(if(identical(grep("O$", method), 1L))
-					 matrexpO else matrexp),
+	       res <- if(identical(grep("O$", method), 1L))
+			  .Fortran(matrexpO,
+			       X = x,
+			       size = d[1],
+			       ntaylor,
+			       npade,
+			       accuracy = double(1))[c("X", "accuracy")]
+		      else
+			  .Fortran(matrexp,
 			       X = x,
 			       size = d[1],
 			       ntaylor,
@@ -196,6 +206,5 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 			       accuracy = double(1))[c("X", "accuracy")]
 	       structure(res$X, accuracy = res$accuracy)
 	   })## end{switch}
-
 }
 

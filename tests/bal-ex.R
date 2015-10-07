@@ -1,6 +1,21 @@
 library(expm)
 source(system.file("test-tools.R", package= "expm"), keep.source=FALSE)## -> assertError()...
 
+## A matrix with 'Inf'
+mI <- rbind(0, c(-Inf, Inf, 0, 0), 0, 0)
+bal3 <-
+    list(dB = dgebal(mI, "B"), # = default
+         dP = dgebal(mI, "P"),
+         dN = dgebal(mI, "N"))
+str(bal3)
+stopifnot(identical(mI, bal3$dN$z),
+          with(bal3, all.equal(dB, dP, tol=1e-14)),
+          all.equal(bal3$dB$z, rbind(c(Inf,-Inf,0,0), 0,0,0), tol=1e-14),
+          all.equal(bal3$dB$scale, c(1,1,3,4)))
+assertError(dgebal(mI, "S"))# gave infinite loop
+
+
+
 ## Compare the two different "balance" pre-conditioning versions in Ward77:
 set.seed(1)
 mList <- lapply(integer(100), function(...) rSpMatrix(20, nnz=80))

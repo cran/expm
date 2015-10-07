@@ -1,0 +1,100 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: expm 0.999-0\n"
+"POT-Creation-Date: 2014-10-01 11:20\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+
+msgid "argument is not a matrix"
+msgstr ""
+
+msgid "matrix not square"
+msgstr ""
+
+msgid "coercing to dense matrix, as required by method"
+msgstr ""
+
+msgid "invalid 'preconditioning'"
+msgstr ""
+
+msgid "Unable to determine matrix exponential"
+msgstr ""
+
+msgid "'A' must be a square matrix"
+msgstr ""
+
+msgid "'x' must be a square matrix"
+msgstr ""
+
+msgid "Pade approximation order 'p' must be between 1 and 13."
+msgstr ""
+
+msgid "'A' must be a square matrix of dimension at least 2"
+msgstr ""
+
+msgid "invalid 'method'"
+msgstr ""
+
+msgid "'lucky guess' was better"
+msgstr ""
+
+msgid "reached  maxiter = %d iterations; tolerances too small?"
+msgstr ""
+
+msgid "A and E need to have the same dimension"
+msgstr ""
+
+msgid "'A' is not a matrix"
+msgstr ""
+
+msgid "nrow(A) must be >= 1"
+msgstr ""
+
+msgid "NaN phi values; probably overflow in expm()"
+msgstr ""
+
+msgid "The requested tolerance (tol=%g) is too small for mxrej=%d."
+msgstr ""
+
+msgid "'x' has negative real eigenvalues; maybe ok for %s"
+msgstr ""
+
+msgid "logm()"
+msgstr ""
+
+msgid "NA/NaN from %s after %d step."
+msgstr ""
+
+msgid "NA/NaN from %s after %d steps."
+msgstr ""
+
+msgid "|| Tr - I ||"
+msgstr ""
+
+msgid "The matrix logarithm may not exist for this matrix."
+msgstr ""
+
+msgid "Inverse scaling did not work (t = %g)."
+msgstr ""
+
+msgid "Setting m = 3 arbitrarily."
+msgstr ""
+
+msgid "logm.Higham08() -> (k, m) = (%d, %d)"
+msgstr ""
+
+msgid "'x' must be a quadratic matrix"
+msgstr ""
+
+msgid "sqrtm()"
+msgstr ""
+
+msgid        "NA/NaN from %s after %d step.\n"
+msgid_plural "NA/NaN from %s after %d steps.\n"
+msgstr[0]    ""
+msgstr[1]    ""

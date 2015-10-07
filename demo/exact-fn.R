@@ -61,8 +61,8 @@ m2ex3 <- function(eps = 0) {
               c( 1, 1/eps)) / (2 * I.e)
     ## NOTE:  kappa(V) = condition_number(V) == 1/eps exactly
     useTol <- 2e-16 / eps
-    stopifnot(all.equal(diag(2), V %*% iV,       tol=useTol),
-              all.equal(A, V %*% diag(D) %*% iV, tol=useTol) )
+    stopifnot(all.equal(diag(2), V %*% iV,	 tolerance=useTol),
+	      all.equal(A, V %*% diag(D) %*% iV, tolerance=useTol) )
     ch.e <- cosh(eps)
     sh.e <- sinh(eps)
     list(A = A,

@@ -16,10 +16,10 @@ A1
 ml1 <- lapply(c(4:10,20),
               function(order) expm(A1, "Pade", order=order))
 for(k in seq_len(length(ml1) - 1))
-    stopifnot(all.equal(ml1[[k]], ml1[[k + 1]], tol = 1e-12))
+    stopifnot(all.equal(ml1[[k]], ml1[[k + 1]], tolerance = 1e-12))
 
 for(k in seq_len(length(ml1) - 1)) {
-    print(all.equal(ml1[[k]], ml1[[k + 1]], tol = 0))
+    print(all.equal(ml1[[k]], ml1[[k + 1]], tolerance = 0))
 }
 
 mA1 <- ml1[[4]]
@@ -28,7 +28,7 @@ stopifnot(all.equal(mA1,
                              4.0012030182399, 2.8845155413486, 4.0012030182399,
                              5.5778402926177, 3.1930144369526, 5.7131755758543),
                            3, 3),
-                           check.attributes = FALSE, tol = 1e-11))
+                           check.attributes = FALSE, tolerance = 1e-11))
 
 
 ## --- 2 ---
@@ -43,10 +43,10 @@ A2
 stopifnot(all.equal(mA2,
                     matrix(c(-0.099574136735459, -0.199148273470915,
                               0.074680602551593 , 0.149361205103183),
-                           2, 2), check.attributes = FALSE, tol = 1e-11))
+                           2, 2), check.attributes = FALSE, tolerance = 1e-11))
 mA2.T <- expm(A2, method = "Taylor")
-stopifnot(all.equal(mA2, mA2.T, tol=1e-10))
-all.equal(mA2, mA2.T, tol=1e-14)#-> 3.2e-12  {MM: I think that's pretty good}
+stopifnot(all.equal(mA2, mA2.T, tolerance=1e-10))
+all.equal(mA2, mA2.T, tolerance=1e-14)#-> 3.2e-12  {MM: I think that's pretty good}
 
 ## --- 3 ---
 ## Here, Eigenvalues  must fail ("not a full set"):
@@ -57,7 +57,7 @@ assertError(expm(mA3, method="R_Eigen"))
 em1 <- exp(-1)
 stopifnot(all.equal(mA3, ## and the exact solution:
                     matrix(c(em1, 0, em1, em1), 2, 2),
-                    check.attributes = FALSE, tol = 1e-14))
+                    check.attributes = FALSE, tolerance = 1e-14))
 
 ## using 'eps' instead of 0 :
 ## ---> see m2ex3() etc in ./exact-ex.R
@@ -79,6 +79,9 @@ stopifnot(all.equal(em.true, expm::expm(m)),
           all.equal(em.true, expm::expm(m,"Pade"), check.attributes=FALSE))
 
 ###----------- expAtv() ----------------
+
+## Bug report, 8 Sep 2014  (R-forge Bugs item #5919), by: Peter Ralph
+stopifnot(expAtv(A3, v=c(0,0))$eAtv == 0)
 
 
 n <- 500
@@ -123,7 +126,7 @@ r <- scl.e.Atv(A,v, s = sc) # at least without error
 ## -----                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 eAv[1,]
 assert.EQ.mat(unname( eAv[rep(1, length(sc)), ]),
-	      unname( eAv[1+2*seq_along(sc), ] ), tol=1e-14)
+	      unname( eAv[1+2*seq_along(sc), ] ), tolerance=1e-14)
 					# 64-bit lynne: 2.7e-16 !!
 
 sc.Atv <- function(A,v, s) {
@@ -133,7 +136,7 @@ sc.Atv <- function(A,v, s) {
 chk.sc.Atv <- function(A,v, s, tol=1e-15) {
     r <- vapply(s, function(l) expAtv(l*A, v, t=1/l)$eAtv, v)
     I <- expAtv(A,v)$eAtv
-    if (!isTRUE(eq <- all.equal(as.vector(r), rep(I, length(s)), tol = tol)))
+    if (!isTRUE(eq <- all.equal(as.vector(r), rep(I, length(s)), tolerance = tol)))
 	stop("not all.equal() |->  ", eq)
 }
 

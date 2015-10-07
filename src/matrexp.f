@@ -70,10 +70,11 @@ c
       call powMat(n,sum, npower)
 c       copy the result back into a
 c
-      do 10 i=1,n
-         do 10 j=1,n
+      do i=1,n
+         do j=1,n
             a(i,j) = sum(i,j)
- 10   continue
+         end do
+      end do
 
       call powMat(n,sol10, npower)
 
@@ -156,8 +157,9 @@ c	print*,'A is scaled by 2**',npower,'  =',nscale
      $      dble(npade-n+1)/dble(n*(2*npade-n+1)*nscale),padedenom)
         call addtodiag(m,padedenom,1.d0)
       enddo
-      do 30 i=1,m
- 30      call solve(m,padedenom,padenom(1,i),approx(1,i))
+      do i=1,m
+         call solve(m,padedenom,padenom(1,i),approx(1,i))
+      end do
       return
       end
 

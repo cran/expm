@@ -19,4 +19,4 @@ T <- cbind(c(0, 0, 0), c(2, 0, 0), c(1, 2, 0))
 expm(T)
 stopifnot(all.equal(logm(expm(T)), T))
 ## and show how close it is
-all.equal(logm(expm(T)), T,  tol=0)# 2.39e-15 {64b ubuntu 12-04}
+all.equal(logm(expm(T)), T,  tolerance=0)# 2.39e-15 {64b ubuntu 12-04}

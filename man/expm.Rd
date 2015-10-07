@@ -11,6 +11,7 @@
 }
 \usage{
 expm(x, method = c("Higham08.b", "Higham08",
+                   "AlMohy-Hi09",
                    "Ward77", "PadeRBS", "Pade", "Taylor", "PadeO", "TaylorO",
                    "R_Eigen", "R_Pade", "R_Ward77", "hybrid_Eigen_Ward"),
      order = 8, trySym = TRUE, tol = .Machine$double.eps, do.sparseMsg = TRUE,
@@ -37,15 +38,15 @@ expm(x, method = c("Higham08.b", "Higham08",
     \code{"R_Eigen"} raises an error. \code{"hybrid_Eigen_Ward"} method also
     tries to diagonalise the matrix \code{x}, if not possible, it uses
     \code{"Ward77"} algorithm.
-    }
+  }
   \item{order}{an integer, the order of approximation to be used, for
     the "Pade" and "Taylor" methods.  The best value for this depends on
     machine precision (and slightly on \code{x}) but for the current
-    double precision arithmetic, one recommendation (and the Matlab implementations)
-    uses \code{order = 6} unconditionally;\cr
-    %% NOTA BENE:  Matlab uses order = 6  !!!
-    our default, \code{8}, is from Ward(1977, p.606)'s recommendation.
-  }
+    double precision arithmetic, one recommendation (and the Matlab
+    implementations) uses \code{order = 6} unconditionally;\cr
+    our default, \code{8}, is from Ward(1977, p.606)'s recommendation,
+    but also used for \code{"AlMohy-Hi09"} where a high order
+    \code{order=12} may be more appropriate (and slightly more expensive).}
   \item{trySym}{logical indicating if \code{method = "R_Eigen"} should use
     \code{\link{isSymmetric}(x)} and take advantage for (almost)
     symmetric matrices.}
@@ -80,6 +81,8 @@ expm(x, method = c("Higham08.b", "Higham08",
   The package vignette for details on the algorithms and calling the
   function from external packages.
 
+  \code{\link{expm.Higham08}} for \code{"Higham08"}.
+
   \code{\link{expAtv}(A,v,t)} computes \eqn{e^{At} v} (for scalar
   \eqn{t} and \eqn{n}-vector \eqn{v}) \emph{directly} and more
   efficiently than computing \eqn{e^{At}}.
@@ -106,6 +109,9 @@ expm(x, method = c("Higham08.b", "Higham08",
 
   The \code{"Higham08"} and \code{"Higham08.b"} (current default) were
   written by Michael Stadelmann, see \code{\link{expm.Higham08}}.
+
+  The \code{"AlMohy-Hi09"} implementation (\R code interfacing to
+  stand-alone C) was provided and donated by Drew Schmidt, U. Tennesse.
 }
 \references{
   Ward, R. C. (1977).  Numerical computation
@@ -119,7 +125,11 @@ expm(x, method = c("Higham08.b", "Higham08",
   Moler, C and van Loan, C (2003).  Nineteen dubious ways to compute
   the exponential of a matrix, twenty-five years later.
   \emph{SIAM Review} \bold{45}, 3--49.  At
-  \url{http://epubs.siam.org/sam-bin/dbq/article/41801}
+  \url{http://epubs.siam.org/doi/pdf/10.1137/S00361445024180}
+
+  Awad H. Al-Mohy and Nicholas J. Higham (2009)
+  A New Scaling and Squaring Algorithm for the Matrix Exponential.
+  \emph{SIAM. J. Matrix Anal. & Appl.}, \bold{31}(3), 970--989.
 }
 \note{
   For a good general discussion of the matrix exponential
@@ -128,7 +138,7 @@ expm(x, method = c("Higham08.b", "Higham08",
 \examples{
 x <- matrix(c(-49, -64, 24, 31), 2, 2)
 expm(x)
-
+expm(x, method = "AlMohy-Hi09")
 ## ----------------------------
 ## Test case 1 from Ward (1977)
 ## ----------------------------

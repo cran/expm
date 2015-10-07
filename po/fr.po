@@ -4,44 +4,106 @@
 # This file is distributed under the same license as the expm package.
 # Vincent Goulet <vincent@vgoulet.act.ulaval.ca>, 2007.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: expm 0.0-1\n"
+"Project-Id-Version: expm 0.999-0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-20 13:46-0500\n"
+"POT-Creation-Date: 2014-10-01 09:33+0200\n"
 "PO-Revision-Date: 2007-11-20 13:56-0500\n"
 "Last-Translator: Vincent Goulet <vincent@vgoulet.act.ulaval.ca>\n"
 "Language-Team: Vincent Goulet <vincent@vgoulet.act.ulaval.ca>\n"
+"Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=ISO-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: expm.c:106
+#: R_dgebal.c:11
+#, c-format
+msgid "argument type='%s' must be a character string of string length 1"
+msgstr ""
+
+#: R_dgebal.c:16
+#, c-format
+msgid "argument type='%s' must be one of 'N', 'P', 'S', or 'B'"
+msgstr ""
+
+#: R_dgebal.c:28
+msgid "invalid 'x': not a numeric (classical R) matrix"
+msgstr ""
+
+#: R_dgebal.c:36 expm-eigen.c:214 expm.c:307 logm-eigen.c:219 matpow.c:23
+msgid "non-square matrix"
+msgstr "matrice non carrée"
+
+#: R_dgebal.c:60
+#, fuzzy, c-format
+msgid "LAPACK's dgebal(%s) returned info code %d"
+msgstr "la procédure LAPACK dgetrs a produit le code d'erreur %d"
+
+#: expm-eigen.c:64 expm-eigen.c:72 logm-eigen.c:68 logm-eigen.c:76
+#, c-format
+msgid "error code %d from Lapack routine dgeev"
+msgstr ""
+
+#: expm-eigen.c:122 logm-eigen.c:126
+#, c-format
+msgid "argument %d of Lapack routine dgesv had invalid value"
+msgstr ""
+
+#: expm-eigen.c:203 logm-eigen.c:213
+msgid "invalid argument"
+msgstr "argument incorrect"
+
+#: expm.c:101
 #, c-format
 msgid "LAPACK routine dgebal returned info code %d when permuting"
-msgstr "la procédure LAPACK dgebal a produit le code d'erreur %d lors de la permutation"
+msgstr ""
+"la procédure LAPACK dgebal a produit le code d'erreur %d lors de la "
+"permutation"
 
-#: expm.c:110
+#: expm.c:106
 #, c-format
 msgid "LAPACK routine dgebal returned info code %d when scaling"
-msgstr "la procédure LAPACK dgebal a produit le code d'erreur %d lors de la mis à l'échelle"
+msgstr ""
+"la procédure LAPACK dgebal a produit le code d'erreur %d lors de la mis à "
+"l'échelle"
 
-#: expm.c:157
+#: expm.c:112
+#, fuzzy, c-format
+msgid "LAPACK' dgebal(\"B\",.) returned info code %d"
+msgstr "la procédure LAPACK dgetrf a produit le code d'erreur %d"
+
+#: expm.c:116
+#, c-format
+msgid "invalid 'precond_kind: %d"
+msgstr ""
+
+#: expm.c:164
 #, c-format
 msgid "LAPACK routine dgetrf returned info code %d"
 msgstr "la procédure LAPACK dgetrf a produit le code d'erreur %d"
 
-#: expm.c:160
+#: expm.c:167
 #, c-format
 msgid "LAPACK routine dgetrs returned info code %d"
 msgstr "la procédure LAPACK dgetrs a produit le code d'erreur %d"
 
-#: expm.c:232
-msgid "invalid argument"
+#: expm.c:288
+msgid "invalid argument: not a numeric matrix"
+msgstr ""
+
+#: expm.c:302
+#, fuzzy, c-format
+msgid "invalid 'kind' argument: %s\n"
 msgstr "argument incorrect"
 
-#: expm.c:238
-msgid "non-square matrix"
+#: matpow.c:14
+#, fuzzy
+msgid "not a matrix"
 msgstr "matrice non carrée"
+
+#: matpow.c:54
+msgid ""
+"power must be a positive integer; use solve() directly for negative powers"
+msgstr ""

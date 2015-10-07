@@ -75,7 +75,7 @@ set.seed(1)
 (em5 <- expm(m5))
 r5  <- expAtv(m5, v)
 r5. <- expAtv(s5, v)
-stopifnot(all.equal(r5, r5., tol = 1e-14),
+stopifnot(all.equal(r5, r5., tolerance = 1e-14),
           all.equal(c(em5 \%*\% v), r5$eAtv))
 
 v <- 10:1

@@ -35,7 +35,7 @@ sqrtm <- function(x) {
     ev <- Sch.x@EValues
     if(getOption("verbose") && any(abs(Arg(ev) - pi) < 1e-7))
         ## Let's see what works: temporarily *NOT* stop()ping :
-        message("'x' has negative real eigenvalues; probably ok")
+        message(sprintf("'x' has negative real eigenvalues; maybe ok for %s", "sqrtm()"))
 
     S <- as.matrix(Sch.x@T)
     Q <- as.matrix(Sch.x@Q)

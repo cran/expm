@@ -19,7 +19,7 @@ logm <- function(x, method = c("Higham08", "Eigen"),
 	       ## AUTHOR: Christophe Dutang
 	       ## matrix exponential using eigenvalues / spectral decomposition and
 	       ## Ward(1977) algorithm if x is numerically non diagonalisable
-	       .Call("do_logm_eigen", x, tol)
+	       .Call(do_logm_eigen, x, tol)
 	   })
 }
 

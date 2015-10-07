@@ -24,7 +24,7 @@ eV1 <- matrix(c(s2,s2,s2,  -2,1,1,  2,-1,-1) / sqrt(6),
               3,3)
 L1 <- diag(lm1 <- c(6, 3, 3))
 stopifnot(
-    all.equal(eV1 %*% L1, T1 %*% eV1, tol=1e-15)
+    all.equal(eV1 %*% L1, T1 %*% eV1, tolerance=1e-15)
     )
 ## However,  eV1 is not orthogonal, but of rank 2
 
@@ -40,13 +40,13 @@ if(FALSE) { ## require("Rmpfr")) { ## 200 bit precision version of that
 m1.t <- matrix(c(147.866622446369, 127.781085523181, 127.781085523182,
                  183.765138646367, 183.765138646366, 163.679601723179,
                  71.797032399996,  91.8825693231832, 111.968106246371), 3,3)
-stopifnot(all.equal(m1.t, m1,  check.attributes=FALSE, tol = 1e-13),
-          all.equal(m1.t, m1O, check.attributes=FALSE, tol = 1e-13),
-          all.equal(m1.t,m1T,  check.attributes=FALSE, tol = 1e-13),
-          all.equal(m1.t,m1TO, check.attributes=FALSE, tol = 1e-13),
-          all.equal(m1.t, expm(T1,"Ward77"),    tol = 1e-13),
-          all.equal(m1.t, expm(T1,"R_Pade"),    tol = 1e-13),
-          all.equal(m1.t, expm(T1,"R_Ward77"),  tol = 1e-13))
+stopifnot(all.equal(m1.t, m1,  check.attributes=FALSE, tolerance = 1e-13),
+          all.equal(m1.t, m1O, check.attributes=FALSE, tolerance = 1e-13),
+          all.equal(m1.t,m1T,  check.attributes=FALSE, tolerance = 1e-13),
+          all.equal(m1.t,m1TO, check.attributes=FALSE, tolerance = 1e-13),
+          all.equal(m1.t, expm(T1,"Ward77"),    tolerance = 1e-13),
+          all.equal(m1.t, expm(T1,"R_Pade"),    tolerance = 1e-13),
+          all.equal(m1.t, expm(T1,"R_Ward77"),  tolerance = 1e-13))
 ## -- these agree with ward (1977, p608)
 ##
 m1.2 <- try( expm(T1, "R_Eigen") ) ## 32-bit: gives an error from solve; 64-bit "ok"
@@ -54,7 +54,7 @@ if(!inherits(m1.2, "try-error")) {
     if(FALSE)## with libatlas R_Eigen is "sehr eigen"
     stopifnot(all.equal(m1.t, m1.2, check.attributes=FALSE))
     ## but it's less accurate:
-    print(all.equal(m1.t, m1.2, check.attributes=FALSE, tol= 1e-12))
+    print(all.equal(m1.t, m1.2, check.attributes=FALSE, tolerance= 1e-12))
     ##-> rel.diff = 6.44e-10 / 6.2023e-10
     ##__ BUT  0.1228099
     ##__ with libatlas (ubuntu 12.04 libatlas-base-dev Version: 3.8.4-3build1)
@@ -85,13 +85,13 @@ m2.t <- matrix(c(5496313853692216, -18231880972008932, -30475770808579672,
                3, 3)
 
 ## -- in this case a very similar degree of accuracy -- even Taylor is ok
-stopifnot(all.equal(m2.t, m2, check.attributes=FALSE, tol = 1e-12),
-          all.equal(m2.t, m2O,check.attributes=FALSE, tol = 1e-12),
-          all.equal(m2.t,m2T, check.attributes=FALSE, tol = 1e-12),
-          all.equal(m2.t,m2TO,check.attributes=FALSE, tol = 1e-12),
-          all.equal(m2.t, expm(T2,"Ward77"),   tol = 1e-12),
-          all.equal(m2.t, expm(T2,"R_Ward77"), tol = 1e-12),
-          all.equal(m2.t, expm(T2,"R_Pade"),   tol = 1e-12),
+stopifnot(all.equal(m2.t, m2, check.attributes=FALSE, tolerance = 1e-12),
+          all.equal(m2.t, m2O,check.attributes=FALSE, tolerance = 1e-12),
+          all.equal(m2.t,m2T, check.attributes=FALSE, tolerance = 1e-12),
+          all.equal(m2.t,m2TO,check.attributes=FALSE, tolerance = 1e-12),
+          all.equal(m2.t, expm(T2,"Ward77"),   tolerance = 1e-12),
+          all.equal(m2.t, expm(T2,"R_Ward77"), tolerance = 1e-12),
+          all.equal(m2.t, expm(T2,"R_Pade"),   tolerance = 1e-12),
           TRUE)
 
 ## ----------------------------
@@ -116,16 +116,16 @@ m3.t <- matrix(c(-1.50964415879218, -5.6325707998812, -4.934938326092,
                  0.135335281175235, 0.406005843524598, 0.541341126763207),
                3,3)
 
-stopifnot(all.equal(m3.t, m3,           check.attributes=FALSE, tol = 3e-11),
+stopifnot(all.equal(m3.t, m3,           check.attributes=FALSE, tolerance = 3e-11),
 					#			  ^^^^^
 					# 1.2455e-11 for libatlas (above)
-          all.equal(m3.t, m3T,          check.attributes=FALSE, tol = 1e-11),
-          all.equal(m3.t, m3O,          check.attributes=FALSE, tol = 1e-11),
-          all.equal(m3.t, m3TO,         check.attributes=FALSE, tol = 1e-11),
-          all.equal(m3.t, expm(T3,"R_Eigen"), tol = 1e-11),
-          all.equal(m3.t, expm(T3,"Ward77"), tol = 1e-11),
-          all.equal(m3.t, expm(T3,"R_Ward"), tol = 1e-11),
-          all.equal(m3.t, expm(T3,"R_Pade"), tol = 1e-11),
+          all.equal(m3.t, m3T,          check.attributes=FALSE, tolerance = 1e-11),
+          all.equal(m3.t, m3O,          check.attributes=FALSE, tolerance = 1e-11),
+          all.equal(m3.t, m3TO,         check.attributes=FALSE, tolerance = 1e-11),
+          all.equal(m3.t, expm(T3,"R_Eigen"), tolerance = 1e-11),
+          all.equal(m3.t, expm(T3,"Ward77"), tolerance = 1e-11),
+          all.equal(m3.t, expm(T3,"R_Ward"), tolerance = 1e-11),
+          all.equal(m3.t, expm(T3,"R_Pade"), tolerance = 1e-11),
           TRUE)
 ## -- in this case, a similar level of agreement with Ward (1977).
 
@@ -149,16 +149,16 @@ T4 <-
 (m4T  <- expm(T4,method="Taylor"))
 (m4TO <- expm(T4,method="TaylorO"))
 
-stopifnot(all.equal(m4  [,10], 1/gamma(10:1), tol=1e-14),
-          all.equal(m4O [,10], 1/gamma(10:1), tol=1e-14),
-          all.equal(m4T [,10], 1/gamma(10:1), tol=1e-14),
-          all.equal(m4TO[,10], 1/gamma(10:1), tol=1e-14),
-	  all.equal(m4, m4O, check.attributes=FALSE, tol=5e-15),
-	  all.equal(m4, m4T, check.attributes=FALSE, tol=5e-15),
-	  all.equal(m4, m4TO,check.attributes=FALSE, tol=5e-15),
-          all.equal(m4, expm(T4,"Ward77"), check.attributes=FALSE, tol = 1e-14),
-          all.equal(m4, expm(T4,"R_Ward"), check.attributes=FALSE, tol = 1e-14),
-          all.equal(m4, expm(T4,"R_Pade"), check.attributes=FALSE, tol = 1e-14),
+stopifnot(all.equal(m4  [,10], 1/gamma(10:1), tolerance=1e-14),
+          all.equal(m4O [,10], 1/gamma(10:1), tolerance=1e-14),
+          all.equal(m4T [,10], 1/gamma(10:1), tolerance=1e-14),
+          all.equal(m4TO[,10], 1/gamma(10:1), tolerance=1e-14),
+	  all.equal(m4, m4O, check.attributes=FALSE, tolerance=5e-15),
+	  all.equal(m4, m4T, check.attributes=FALSE, tolerance=5e-15),
+	  all.equal(m4, m4TO,check.attributes=FALSE, tolerance=5e-15),
+          all.equal(m4, expm(T4,"Ward77"), check.attributes=FALSE, tolerance = 1e-14),
+          all.equal(m4, expm(T4,"R_Ward"), check.attributes=FALSE, tolerance = 1e-14),
+          all.equal(m4, expm(T4,"R_Pade"), check.attributes=FALSE, tolerance = 1e-14),
           max(abs(m4 - expm(T4,"R_Eigen"))) < 1e-7)
 ## here expm(., EV ) is accurate only to 7 d.p., whereas
 ##      expm(.,Pade) is correct to at least 14 d.p.

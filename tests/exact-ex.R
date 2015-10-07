@@ -63,6 +63,13 @@ cat("relErr(expm(.,Pade)) - relErr(expm(.,Ward77))  in Machine_eps units:\n")
 print(summary(c(re - RE)) / epsC)
 ##       Min.    1st Qu.     Median       Mean    3rd Qu.       Max.
 ## -0.6183442  0.0000000  0.0000000  1.3650410  0.1399719 94.9809161
+## nb-mm3; ditto lynne (both x64), 2014-09-11:
+##   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+## -0.8422  0.0000  0.0000  0.0725  0.1067  1.2205
+## 32-bit [i686, florence, Linx 3.14.8-100.fc19..]:
+##  Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
+## -0.62    0.00    0.00    1.36    0.14   95.93
+
 
 showProc.time()
 
@@ -90,14 +97,18 @@ expmList <-
 	 s.P.s = function(x) expm::expm(x, "Pade"),
 	 s.P.sO= function(x) expm::expm(x, "PadeO"),
 	 s.P.sRBS= function(x) expm::expm(x, "PadeRBS"),
-	 sPs.H08.= function(x) expm::expm.Higham08(x, balancing=FALSE),
-	 sPs.H08b= function(x) expm::expm.Higham08(x, balancing= TRUE),
+	 sPs.H08.= function(x) expm:: expm.Higham08(x, balancing=FALSE),
+	 sPs.H08b= function(x) expm:: expm.Higham08(x, balancing= TRUE),
+	 AmHi09.06= function(x) expm:::expm.AlMoHi09(x, p =  6),
+	 AmHi09.08= function(x) expm:::expm.AlMoHi09(x, p =  8),
+	 AmHi09.10= function(x) expm:::expm.AlMoHi09(x, p = 10),
+	 AmHi09.12= function(x) expm:::expm.AlMoHi09(x, p = 12),
+	 AmHi09.13= function(x) expm:::expm.AlMoHi09(x, p = 13),
 	 s.T.s = function(x) expm::expm(x, "Taylor"),
 	 s.T.sO= function(x) expm::expm(x, "TaylorO"),
 	 Eigen = expm.safe.Eigen,
 	 hybrid= function(x) expm::expm(x, "hybrid")
 	 )
-expmL.wo.E <- expmList[names(expmList) != "R_Eigen"]
 
 
 set.seed(12)
@@ -108,7 +119,7 @@ summary(-log10(t(fRE["relErr",,])))
 
 
 ## Now look at that:
-boxplot(t(fRE["relErr",,]), log="y", notch=TRUE,
+boxplot(t(fRE["relErr",,]), log="y", notch=TRUE, ylim = c(8e-16, 1e-8),
         main = "relative errors for 'random' eigen-ok 20 x 20 matrix")
 
 showProc.time()
@@ -135,7 +146,7 @@ print(nms.swift <- names(expmList) %w/o%
  c("s.P.s", "s.P.sO", "s.T.s", "s.T.sO"))
 expmL.swift <- expmList[nms.swift]
 
-## 12 replicates is too small .. but then it's too slow otherwise:
+set.seed(18) ## 12 replicates is too small .. but then it's too slow otherwise:
 rf400 <- replicate(12, re.facMat(400, expmL.swift))
 print(1000*t(apply(rf400["c.time",,], 1, summary)))
 ## lynne:
@@ -171,48 +182,59 @@ cbind(sort(apply(log(t.m2),2, median, na.rm=TRUE)))
 ## 'na.rm=TRUE' needed for Eigen which blows up for the last 3 eps
 t.m2.ranks <- sort(rowMeans(apply(t.m2, 1, rank)))
 cbind(signif(t.m2.ranks, 3))
-## sPs.H08. 2.08
-## sPs.H08b 2.08
-## Ward     2.25
-## s.T.s    5.44
-## s.T.sO   5.44
-## s.P.s    6.06
-## s.P.sO   6.06
-## hybrid   7.25
-## Eigen    8.33
+## lynne (x86_64, Linux 3.14.4-100; Intel i7-4765T), 2014-09:
+## sPs.H08.   2.67
+## sPs.H08b   2.67
+## s.P.sRBS   3.06
+## Ward       4.03
+## AmHi09.13  4.33 <<- still not close to H08 !
+## AmHi09.12  5.86
+## s.T.s      8.33
+## s.T.sO     8.33
+## s.P.s      9.11
+## s.P.sO     9.11
+## hybrid    10.80
+## AmHi09.10 11.70 << astonishingly bad
+## Eigen     12.60
+## AmHi09.08 13.10
+## AmHi09.06 14.40
 
 print(t.m2[, names(t.m2.ranks)[1:8]], digits = 3)
 ## ==> 1st class: H08 (both) and (but slightly better than)  Ward
 ##     2nd class  s.T.s and s.P.s
 ##    "bad" : hybrid and Eigen
 
+## ??? AmHi09 - methods, up to order = 10 are worse !
 if(require(RColorBrewer)) {
     ## Bcol <- brewer.pal(ncol(t.m2),"Dark2")
-    Bcol <- brewer.pal(ncol(t.m2),"Set1")
+    Bcol <- brewer.pal(min(9, ncol(t.m2)), "Set1")
+    Bcol <- Bcol[sqrt(colSums(col2rgb(Bcol)^2)) < 340]
+    ## FIXME: more colors ==> ~/R/MM/GRAPHICS/color-palettes.R
 } else {
     ## 7 from Dark2
     ## Bcol <- c("#1B9E77", "#D95F02", "#7570B3", "#E7298A",
     ##		 "#66A61E", "#E6AB02", "#A6761D")
     ## Rather: those from "Set1"
     Bcol <- c("#E41A1C", "#377EB8", "#4DAF4A",
-	      "#984EA3", "#FF7F00", "#FFFF33",
+	      "#984EA3", "#FF7F00", # too bright: "#FFFF33",
 	      "#A65628", "#F781BF", "#999999")
 }
 
-matplot(eps, t.m2, type = "b", log = "xy", col=Bcol, lty = 1:9, pch=1:9,
+matplot(eps, t.m2, type = "b", log = "xy", col=Bcol, lty = 1:9, pch=1:15,
         axes=FALSE, frame = TRUE,
         xlab = expression(epsilon), ylab = "relative error",
         main = expression(expm(A, method == "*") *"  relative errors for  " *
             A == bgroup("[", atop({-1} *"  "* 1, {epsilon^2} *"  "*{-1}), "]")))
-legend("bottomright",colnames(t.m2),       col=Bcol, lty = 1:7, pch=1:7,
+legend("bottomright",colnames(t.m2),       col=Bcol, lty = 1:9, pch=1:15,
        inset = 0.02)
 if(require("sfsmisc")) {
     sfsmisc::eaxis(1, labels=FALSE)
     sfsmisc::eaxis(1, at = eps[c(TRUE,FALSE)])
-    sfsmisc::eaxis(2, labels=FALSE)
-    op <- par(las=2)
-    sfsmisc::eaxis(2, at = axTicks(2,log=TRUE)[c(TRUE,FALSE,FALSE)])
-    par(op)
+    sfsmisc::eaxis(2)
+    ## sfsmisc::eaxis(2, labels=FALSE)
+    ## op <- par(las=2)
+    ## sfsmisc::eaxis(2, at = axTicks(2,log=TRUE)[c(TRUE,FALSE,FALSE)])
+    ## par(op)
 } else {
     axis(1)
     axis(2)
@@ -226,7 +248,7 @@ me$expA * exp(1) ## the correct value ; numerically identical to simple matrix:
 stopifnot(all.equal(me$expA * exp(1),
 		    rbind(c(  1,  1),
 			  c(ep^2, 1)),
-		    tol = 1e-14))
+		    tolerance = 1e-14))
 ## The relative error (matrices):
 lapply(expmList, function(EXPM) 1 - EXPM(me$A)/me$expA)
 
@@ -265,14 +287,13 @@ EmN <- matrix(c(dN, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 Em.xct <- EmN / dN
 
 stopifnot(all.equal(E.m, Em.xct,
-                    check.attributes = FALSE, tol= 1e-13))
-re.x <- sapply(expmL.wo.E, function(EXPM) relErr(Em.xct, EXPM(m)))
+                    check.attributes = FALSE, tolerance= 1e-13))
+re.x <- sapply(expmList, function(EXPM) relErr(Em.xct, EXPM(m)))
 ## with error message from "safe.Eigen"  -->  Eigen is NA here
 
 ## result depends quite a bit on platform
 which(is.na(re.x))
 (re.x <- re.x[!is.na(re.x)])
-
 
 ## Pentium-M 32-bit ubuntu gave
 ##      Ward     s.P.s    s.P.sO  sPs.H08.  sPs.H08b     s.T.s    s.T.sO    hybrid
@@ -291,15 +312,19 @@ which(is.na(re.x))
 ##     Ward    s.P.s   s.P.sO sPs.H08. sPs.H08b    s.T.s   s.T.sO hybrid
 ## 5.13e-17 3.99e-17 3.99e-17 1.84e-15 1.84e-15 8.44e-17 8.44e-17 5.13e-17
 
-stopifnot(re.x[c("Ward", "s.T.s", "s.T.sO")] < 3e-16,
-          re.x < 1e-13)# <- 32-bit needed 0.451e-14
+## 2014-09: AmHi09 are very good (64bit: 8e-17) for p >= 8 (p=6 has 1.5e-11)
 
-##--- Now look at the *sparse* methods:
+not.09.06 <- which(names(re.x) != "AmHi09.06")
+stopifnot(re.x[c("Ward", "s.T.s", "s.T.sO")] < 3e-16,
+          re.x[["AmHi09.06"]] < 9e-11, # x64 & 686(lnx): = 1.509e-11
+          re.x[not.09.06] < 4e-13)# max: 686(32b): 4.52e-14, x64(lnx): 1.103e-16
+
+##-- Looking at *sparse* matrices: [C,Fortran "dense" code based methods will fail]:
 (meths <- eval(formals(expm)$method))
 ems <- sapply(meths, function(met)
               tryCatch(expm::expm(m., method=met), error=identity))
 ok <- !sapply(ems, is, class="error")
 meths[ok] # only two, for now
+## "Higham08" "R_Pade"
 
 showProc.time()
-

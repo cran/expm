@@ -11,8 +11,13 @@
 
 typedef enum {Ward_2, Ward_1, Ward_buggy_octave} precond_type;
 
+SEXP R_dgebal(SEXP x, SEXP type);
+
 SEXP do_expm(SEXP x, SEXP kind);
 void expm(double *x, int n, double *z, precond_type precond_kind);
+
+SEXP R_matexp_MH09(SEXP x, SEXP p);
+void matexp_MH09(double *x, int n, const int p, double *ret);
 
 // The legacy code: -----------------------------
 

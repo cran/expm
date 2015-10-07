@@ -37,7 +37,7 @@ dgebalTst <- function(A) {
             pp <- as.integer(P$scale)
             ## Permute A to become P$z :
             A. <- doPerm(orig.A, pp = pp, i1=i1, i2=i2)
-            stopifnot(isTRUE(all.equal(A., P$z, tol = 1e-15)))
+            stopifnot(isTRUE(all.equal(A., P$z, tolerance = 1e-15)))
 
             ## Now the reverse: Use pp[] and permute  A. "back to A":
             if(leftP) { ## The lower part
@@ -53,7 +53,7 @@ dgebalTst <- function(A) {
                     tt <- A.[i,]; A.[i,] <- A.[pp[i],]; A.[pp[i],] <- tt
                 }
             }
-            stopifnot(isTRUE(all.equal(A., orig.A, tol = 1e-15)))
+            stopifnot(isTRUE(all.equal(A., orig.A, tolerance = 1e-15)))
         }
     }
     checkPerm(P, orig.A = A)
@@ -68,10 +68,10 @@ dgebalTst <- function(A) {
         ## A.scaled <- diag(1/d, n) \%*\% A1 \%*\% diag(d, n)
         ## more efficiently:
         A.scaled <- A1 * (rep(d, each = n) / d)
-        stopifnot(isTRUE(all.equal(A2, A.scaled, tol = 1e-15)))
+        stopifnot(isTRUE(all.equal(A2, A.scaled, tolerance = 1e-15)))
         ## Check the reverse:
         S.rescaled <- A2 * (d * rep(1/d, each = n))
-        stopifnot(isTRUE(all.equal(A1, S.rescaled, tol = 1e-15)))
+        stopifnot(isTRUE(all.equal(A1, S.rescaled, tolerance = 1e-15)))
     }
     checkScal(d = S$scale, A1 = P$z, A2 = S$z)
 

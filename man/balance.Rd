@@ -13,8 +13,8 @@
   will probably become deprecated.
 }
 \usage{
-balance(A, job = c("B", "P", "S"))
- dgebal(A, job = c("B", "P", "S"))
+balance(A, job = c("B", "N", "P", "S"))
+ dgebal(A, job = c("B", "N", "P", "S"))
 }
 \arguments{
   \item{A}{a square (\eqn{n\times n}{n x n}) numeric matrix.}
@@ -23,6 +23,7 @@ balance(A, job = c("B", "P", "S"))
       \item{P}{\bold{P}ermutation}
       \item{S}{\bold{S}caling}
       \item{B}{\bold{B}oth permutation and scaling}
+      \item{N}{\bold{N}one}
     }
   }
 }
