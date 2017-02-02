@@ -1,7 +1,6 @@
 #-*-org-*-
 
 * TODO expm() should work for sparse matrices for more methods
-  
 * expAtv(A, v, t)
 ** TODO should work for *vector* t
 ** TODO should implement the new method by  Al-Mohy and Higham (2011),

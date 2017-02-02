@@ -21,7 +21,6 @@
    Awad H. Al-Mohy and Nicholas J. Higham, August 2009
 */
 
-#include <stdio.h>
 #include <stdlib.h>
 // #include <assert.h>
 #include <math.h>

@@ -56,7 +56,7 @@ void matpow(double *x, int n, int k, double *z)
     else { /* k >= 1 */
 	static const char *transa = "N";
 	static const double one = 1.0, zero = 0.0;
-	int nSqr = n * n;
+	size_t nSqr = n * ((size_t) n);
 	double /* temporary matrix */
 	    *tmp  = (double *) R_alloc(nSqr, sizeof(double));
 
@@ -64,14 +64,14 @@ void matpow(double *x, int n, int k, double *z)
 	 * product left to make. That is, if k = 5, compute (x * x),
 	 * then ((x * x) * (x * x)) and finally ((x * x) * (x * x)) * x.
 	 */
-	Memcpy(z, x, (size_t) nSqr);
+	Memcpy(z, x, nSqr);
 
 	k--;
 	while (k > 0) {
 	    if (k & 1) {	/* z := z * x */
 		F77_CALL(dgemm)(transa, transa, &n, &n, &n, &one,
 				z, &n, x, &n, &zero, tmp, &n);
-		Memcpy(z, tmp, (size_t) nSqr);
+		Memcpy(z, tmp, nSqr);
 	    }
 	    if(k == 1)
 		break;
@@ -80,7 +80,7 @@ void matpow(double *x, int n, int k, double *z)
 	    /* x := x * x */
 	    F77_CALL(dgemm)(transa, transa, &n, &n, &n, &one,
 			    x, &n, x, &n, &zero, tmp, &n);
-	    Memcpy(x, tmp, (size_t) nSqr);
+	    Memcpy(x, tmp, nSqr);
 	}
     }
 }

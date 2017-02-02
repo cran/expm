@@ -15,7 +15,8 @@
 expm.Higham08(A, balancing = TRUE)
 }
 \arguments{
-  \item{A}{square matrix}
+  \item{A}{square matrix, may be a \code{"\linkS4class{sparseMatrix}"},
+    currently only if \code{balancing} is false.}
   \item{balancing}{logical indicating if balancing should happen (before
     and after scaling and squaring).}
 }
@@ -123,6 +124,11 @@ test4 <-
 
 E4 <- expm.Higham08(test4)
 Matrix(zapsmall(E4))
+
+S4 <- as(test4, "sparseMatrix") # some R based expm() methods work for sparse:
+ES4 <- expm.Higham08(S4, bal=FALSE)
+stopifnot(all.equal(E4, unname(as.matrix(ES4))))
+## NOTE: Need much larger sparse matrices for sparse arith to be faster!
 
 ##
 ## example of computationally singular matrix

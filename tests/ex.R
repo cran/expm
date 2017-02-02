@@ -181,5 +181,6 @@ W4 <- rbind(c(1, 1, -1),
 	    c(1, 1,  0),
 	    c(1, 0,  3))
 (sW4 <- solve(W4))
-stopifnot(all.equal(diag(x = c(1,2,2)),
-		    solve(W4) %*% A4 %*% W4 ))
+assert.EQ(diag(x = c(1,2,2)), solve(W4) %*% A4 %*% W4, giveRE=TRUE)
+assert.EQ(A4,  logm(expm(A4)),            tol = 3e-13, giveRE=TRUE)
+## seen 5.5e-14 with R's own matprod

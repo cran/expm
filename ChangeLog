@@ -1,5 +1,12 @@
+2016-12-13  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.999-1
+	* src/matpow.c (matpow): use size_t etc, trying to prevent integer
+	overflow when  n^2 > .Machine$integer.max, i.e., n >= 46341
+
 2015-10-06  Martin Maechler  <maechler@stat.math.ethz.ch>
 
+	* DESCRIPTION (Version): 0.999-0
 	* R/balance.R (balance): also add 'job = "N"' (i.e., 'none') option.
 
 	* src/R_dgebal.c (R_dgebal): catch +/-Inf in matrix avoiding

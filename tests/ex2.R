@@ -4,7 +4,7 @@
 library(expm)
 
 source(system.file("test-tools.R", package= "expm"), keep.source=FALSE)
-## -> assertError()...
+## -> assertError()... doExtras
 
 ## --- 1 ---
 ## Here, all three {eigen; Taylor; Pade(Scaling & Squaring)} should do well

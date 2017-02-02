@@ -1,9 +1,10 @@
 \name{expmFrechet}
-\Rdversion{1.1}
-\alias{expmFrechet}
 \title{Frechet Derivative of the Matrix Exponential}
+\alias{expmFrechet}
+\encoding{UTF-8}
 \description{
-  Compute the Frechet derivative of the matrix exponential operator
+  Compute the Frechet (actually \sQuote{Fréchet}) derivative of the
+  matrix exponential operator.
 }
 \usage{
 expmFrechet(A, E, method = c("SPS", "blockEnlarge"), expm = TRUE)
@@ -60,4 +61,4 @@ all.equal(L.AE, expmFrechet(A, E, "block"), tolerance = 1e-14) ## TRUE
 }
 \keyword{algebra}
 \keyword{math}
-\encoding{UTF-8}
+
