@@ -34,6 +34,17 @@ re.m2ex3 <- function(eps, EXPMlist)
     sapply(EXPMlist, function(EXPM) relErr(r$expA, EXPM(r$A)))
 }
 
+## check 1x1 matrices
+stopifnot(
+    ## these had failed before 2017-03-28 (= Liselotte's 58-th birthday):
+    all.equal(as.matrix(sqrtm(matrix(4))),  matrix(2)) ,
+    all.equal(as.matrix(logm (matrix(pi))), matrix(log(pi))) ,
+  ## these had "always" worked :
+    all.equal(as.matrix(expm (matrix(0))), matrix(1)) ,
+    all.equal(as.matrix(expm (matrix(1))), matrix(exp(1)))
+)
+
+
 set.seed(321)
 re <- replicate(1000,
                 c(re.nilA3(rlnorm(3),list(function(x)expm(x,"Pade"))),

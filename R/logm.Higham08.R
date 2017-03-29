@@ -146,32 +146,37 @@ logm.Higham08 <- function(x) {
 ## R-Implementation of Higham's Algorithm from the Book
 ## "Functions of Matrices - Theory and Computation", Chapter 6, Algorithm 6.7
 
-rootS <- function(UT) {
-    ## Generate Basic informations of Matrix UT
-    stopifnot(length(d <- dim(UT)) == 2, is.numeric(d),
+## NB: Much in parallel with sqrtm() in ./sqrtm.R  <<< keep in sync
+##                           ~~~~~        ~~~~~~~
+rootS <- function(x) {
+    ## Generate Basic informations of Matrix x
+    stopifnot(length(d <- dim(x)) == 2, is.numeric(d),
               (n <- d[1]) == d[2], n >= 1)
-    ## FIXME : should work for "Matrix" too: not     S <- as.matrix(UT)
-    S <- UT
+    ## FIXME : should work for "Matrix" too: not     S <- as.matrix(x)
+    S <- x
 
     ##------- STEP 0: Analyse block structure ----------------------------------
-    ## Count 2x2 blocks (as Schur(x) is the real Schur Decompostion)
-    J.has.2 <- S[cbind(2:n, 1:(n-1))] != 0
-    k <- sum(J.has.2) ## := number of non-zero SUB-diagonals
+    if(n > 1L) {
+        ## Count 2x2 blocks (as Schur(x) is the real Schur Decompostion)
+        J.has.2 <- S[cbind(2:n, 1:(n-1))] != 0
+        k <- sum(J.has.2) ## := number of non-zero SUB-diagonals
+    } else k <- 0L
 
     ## Generate Blockstructure and save it as R.index
     R.index <- vector("list",n-k)
-    l <- 1
-    i <- 1
+    l <- 1L
+    i <- 1L
     while(i < n) { ## i advances by 1 or 2, depending on 1- or 2- Jordan Block
-	if (S[i+1,i] == 0) {
+	if (S[i+1L,i] == 0) {
 	    R.index[[l]] <- i
 	}
 	else {
-	    R.index[[l]] <- (i:(i+1))
-	    i <- i+1
+            i1 <- i+1L
+	    R.index[[l]] <- c(i,i1) # = i:(i+1)
+	    i <- i1
 	}
-	i <- i+1
-	l <- l+1
+	i <- i+1L
+	l <- l+1L
     }
     if (is.null(R.index[[n-k]])) { # needed; FIXME: should be able to "know"
         ##message(sprintf("R.index[n-k = %d]] is NULL, set to n=%d", n-k,n))
@@ -184,7 +189,7 @@ rootS <- function(UT) {
     X <- matrix(0,n,n)
     for (j in seq_len(n-k)) {
         ij <- R.index[[j]]
-	if (length(ij) == 1) {
+	if (length(ij) == 1L) {
 	    ## Sij <- S[ij,ij]
 	    ## if(Sij < 0)
 	    ##	   ## FIXME(?) : in sqrtm(), we take *complex* sqrt() if needed :
@@ -209,15 +214,15 @@ rootS <- function(UT) {
     ##---------STEP 2: Calculate superdiagonal elements/blocks-------------------
 
     ## Calculate the remaining, not-diagonal blocks
-    if (n-k > 1) for (j in 2:(n-k)) {
+    if (n-k > 1L) for (j in 2L:(n-k)) {
         ij <- R.index[[j]]
-        for (i in (j-1):1) {
+        for (i in (j-1L):1L) {
             ii <- R.index[[i]]
             sumU <- 0
 
             ## Calculation for 1x1 Blocks
-	    if (length(ij) == 1 & length(ii) == 1 ) {
-		if (j-i > 1) for (l in (i+1):(j-1)) {
+	    if (length(ij) == 1L & length(ii) == 1L ) {
+		if (j-i > 1L) for (l in (i+1L):(j-1L)) {
 		    il <- R.index[[l]]
 		    sumU <- sumU + {
 			if (length(il) == 2 ) X[ii,il]%*%X[il,ij]
@@ -228,8 +233,8 @@ rootS <- function(UT) {
 	    }
 
 	    ## Calculation for	1x2 Blocks
-	    else if (length(ij) == 2 & length(ii) == 1 ) {
-		if (j-i > 1) for (l in(i+1):(j-1)) {
+	    else if (length(ij) == 2 & length(ii) == 1L ) {
+		if (j-i > 1L) for (l in(i+1L):(j-1L)) {
 		    il <- R.index[[l]]
 		    sumU <- sumU + {
 			if (length(il) == 2) X[ii,il]%*%X[il,ij]
@@ -241,8 +246,8 @@ rootS <- function(UT) {
 	    }
 
 	    ## Calculation for	2x1 Blocks
-	    else if (length(ij) == 1 & length(ii) == 2 ) {
-		if (j-i > 1) for (l in(i+1):(j-1)) {
+	    else if (length(ij) == 1L & length(ii) == 2 ) {
+		if (j-i > 1L) for (l in(i+1L):(j-1L)) {
 		    il <- R.index[[l]]
 		    sumU <- sumU + {
 			if (length(il) == 2 ) X[ii,il]%*%X[il,ij]
@@ -253,7 +258,7 @@ rootS <- function(UT) {
 	    }
 	    ## Calculation for	2x2 Blocks with special equation for solver
 	    else if (length(ij) == 2 & length(ii) == 2 ) {
-		if (j-i > 1) for (l in(i+1):(j-1)) {
+		if (j-i > 1L) for (l in(i+1L):(j-1L)) {
 		    il <- R.index[[l]]
 		    sumU <- sumU + {
 			if (length(il) == 2 ) X[ii,il] %*%   X[il,ij]
@@ -264,10 +269,10 @@ rootS <- function(UT) {
 		tUii[1:2,1:2] <- X[ii,ii]
 		tUii[3:4,3:4] <- X[ii,ii]
 		tUjj <- matrix(0,4,4)
-		tUjj[1:2,1:2] <- t(X[ij,ij])[1,1]*I
-		tUjj[3:4,3:4] <- t(X[ij,ij])[2,2]*I
-		tUjj[1:2,3:4] <- t(X[ij,ij])[1,2]*I
-		tUjj[3:4,1:2] <- t(X[ij,ij])[2,1]*I
+		tUjj[1:2,1:2] <- t(X[ij,ij])[1L,1L]*I
+		tUjj[3:4,3:4] <- t(X[ij,ij])[2L,2L]*I
+		tUjj[1:2,3:4] <- t(X[ij,ij])[1L,2L]*I
+		tUjj[3:4,1:2] <- t(X[ij,ij])[2L,1L]*I
 		X[ii,ij] <- solve(tUii+tUjj,as.vector(S[ii,ij]-sumU))
 	    }
 	}
