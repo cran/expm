@@ -279,7 +279,7 @@ void expm(double *x, int n, double *z, precond_type precond_kind)
 SEXP do_expm(SEXP x, SEXP kind)
 {
     SEXP dims, z;
-    int n, nprot = 1;
+    int n, nprot = 0;
     double *rx, *rz;
     const char *ch_kind = CHAR(asChar(kind));
     precond_type PC_kind = Ward_2 /* -Wall */;
@@ -287,8 +287,7 @@ SEXP do_expm(SEXP x, SEXP kind)
     if (!isNumeric(x) || !isMatrix(x))
 	error(_("invalid argument: not a numeric matrix"));
     if (isInteger(x)) {
-	nprot++;
-	x = PROTECT(coerceVector(x, REALSXP));
+	x = PROTECT(coerceVector(x, REALSXP)); 	nprot++;
     }
     rx = REAL(x);
 
@@ -305,10 +304,12 @@ SEXP do_expm(SEXP x, SEXP kind)
     n = INTEGER(dims)[0];
     if (n != INTEGER(dims)[1])
 	error(_("non-square matrix"));
-    if (n == 0)
+    if (n == 0) {
+	UNPROTECT(nprot);
 	return(allocMatrix(REALSXP, 0, 0));
+    }
 
-    PROTECT(z = allocMatrix(REALSXP, n, n));
+    PROTECT(z = allocMatrix(REALSXP, n, n)); nprot++;
     rz = REAL(z);
 
     expm(rx, n, rz, PC_kind);

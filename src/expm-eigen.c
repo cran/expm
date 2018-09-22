@@ -195,27 +195,27 @@ void expm_eigen(double *x, int n, double *z, double tol)
 SEXP do_expm_eigen(SEXP x, SEXP tolin)
 {
     SEXP dims, z;
-    int n, m, nprot = 1;
+    int n, nprot = 0;
     double *rx, *rz;
     double tol = asReal(tolin);
 
     if (!isNumeric(x) || !isMatrix(x))
-        error(_("invalid argument"));
+	error(_("invalid argument: not a numeric matrix"));
     if (isInteger(x)) {
-	nprot++;
-	x = PROTECT(coerceVector(x, REALSXP));
+	x = PROTECT(coerceVector(x, REALSXP)); nprot++;
     }
     rx = REAL(x);
 
     dims = getAttrib(x, R_DimSymbol);
     n = INTEGER(dims)[0];
-    m = INTEGER(dims)[0];
-    if (n != m)
-        error(_("non-square matrix"));
-    if (n == 0)
-        return(allocVector(REALSXP, 0));
+    if (n != INTEGER(dims)[1])
+	error(_("non-square matrix"));
+    if (n == 0) {
+	UNPROTECT(nprot);
+	return(allocMatrix(REALSXP, 0, 0));
+    }
 
-    PROTECT(z = allocMatrix(REALSXP, n, n));
+    PROTECT(z = allocMatrix(REALSXP, n, n)); nprot++;
     rz = REAL(z);
 
     expm_eigen(rx, n, rz, tol);

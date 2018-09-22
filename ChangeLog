@@ -1,3 +1,13 @@
+2018-09-15  Martin Mächler  <maechler@stat.math.ethz.ch>
+
+	* man/logm.Rd: use try(.) [for solaris where needed]
+
+2017-04-06  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.999-3
+	* src/expm-eigen.c (do_expm_eigen): fix possible PROTECT stack imbalance
+	* src/expm.c (do_expm): ditto; both thanks to T.Kalibera's  `expm.so.bcheck`
+
 2017-03-28  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* R/sqrtm.R (sqrtm): simple modification so it works for 1x1 matrix
