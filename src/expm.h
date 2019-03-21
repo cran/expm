@@ -7,7 +7,7 @@
 #include <Rmath.h>
 #include <R_ext/Lapack.h>
 #include <R_ext/BLAS.h>
-#include "locale.h"
+#include "R_NLS_locale.h"
 
 typedef enum {Ward_2, Ward_1, Ward_buggy_octave} precond_type;
 

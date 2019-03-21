@@ -14,7 +14,7 @@
 
 
 
-#include "locale.h"
+#include "R_NLS_locale.h"
 #include "expm.h"
 
 SEXP do_expm_eigen(SEXP x, SEXP tolin);

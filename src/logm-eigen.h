@@ -14,7 +14,7 @@
 
 
 
-#include "locale.h"
+#include "R_NLS_locale.h"
 //#include "logm.h"
 
 SEXP do_logm_eigen(SEXP x, SEXP tolin);

@@ -1,8 +1,8 @@
 Package: expm
 Type: Package
 Title: Matrix Exponential, Log, 'etc'
-Version: 0.999-3
-Date: 2019-09-15
+Version: 0.999-4
+Date: 2019-03-20
 Author: Vincent Goulet, Christophe Dutang, Martin Maechler,
 	David Firth, Marina Shapira, Michael Stadelmann
 Contact: expm-developers@lists.R-forge.R-project.org
@@ -17,6 +17,6 @@ License: GPL (>= 2)
 URL: http://R-Forge.R-project.org/projects/expm/
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2018-09-15 19:38:05 UTC; maechler
+Packaged: 2019-03-21 07:54:23 UTC; maechler
 Repository: CRAN
-Date/Publication: 2018-09-22 04:30:15 UTC
+Date/Publication: 2019-03-21 10:10:02 UTC

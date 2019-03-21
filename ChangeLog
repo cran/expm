@@ -1,3 +1,10 @@
+2019-03-20  Martin Mächler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.999-4
+	* src/R_NLS_locale.h renamed from ../locale.h helping wrongly
+	configured compiler|preprocessort setups.
+	* src/expm.h, etc: use "R_NLS_locale.h"
+
 2018-09-15  Martin Mächler  <maechler@stat.math.ethz.ch>
 
 	* man/logm.Rd: use try(.) [for solaris where needed]

@@ -2,7 +2,7 @@
 #include <Rinternals.h>
 #include <R_ext/BLAS.h>
 
-#include "locale.h"
+#include "R_NLS_locale.h"
 
 /* The C API :*/
 void matpow(double *x, int n, int k, double *z);
