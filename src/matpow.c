@@ -70,7 +70,7 @@ void matpow(double *x, int n, int k, double *z)
 	while (k > 0) {
 	    if (k & 1) {	/* z := z * x */
 		F77_CALL(dgemm)(transa, transa, &n, &n, &n, &one,
-				z, &n, x, &n, &zero, tmp, &n);
+				z, &n, x, &n, &zero, tmp, &n FCONE FCONE);
 		Memcpy(z, tmp, nSqr);
 	    }
 	    if(k == 1)
@@ -79,7 +79,7 @@ void matpow(double *x, int n, int k, double *z)
 
 	    /* x := x * x */
 	    F77_CALL(dgemm)(transa, transa, &n, &n, &n, &one,
-			    x, &n, x, &n, &zero, tmp, &n);
+			    x, &n, x, &n, &zero, tmp, &n FCONE FCONE);
 	    Memcpy(x, tmp, nSqr);
 	}
     }

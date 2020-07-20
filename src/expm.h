@@ -2,11 +2,17 @@
 #ifndef R_PKG_EXPM_H
 #define R_PKG_EXPM_H
 
+#define USE_FC_LEN_T
+#include <Rconfig.h>
+#include <R_ext/BLAS.h>
+#ifndef FCONE
+# define FCONE
+#endif
+
 #include <R.h>
 #include <Rinternals.h>
 #include <Rmath.h>
 #include <R_ext/Lapack.h>
-#include <R_ext/BLAS.h>
 #include "R_NLS_locale.h"
 
 typedef enum {Ward_2, Ward_1, Ward_buggy_octave} precond_type;

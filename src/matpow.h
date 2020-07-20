@@ -1,8 +1,4 @@
-#include <R.h>
-#include <Rinternals.h>
-#include <R_ext/BLAS.h>
-
-#include "R_NLS_locale.h"
+#include "expm.h"
 
 /* The C API :*/
 void matpow(double *x, int n, int k, double *z);

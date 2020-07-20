@@ -1,3 +1,10 @@
+2020-07-16  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.999-5
+	* src/expm.h: add USE_FC_LEN_T and "FCONE" --> for LTO-compliant BLAS/Lapack
+	* src/*.c: use "expm.h" even more; use FCONE for LTO-compliance
+
+
 2019-03-20  Martin Mächler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 0.999-4

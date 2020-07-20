@@ -74,9 +74,12 @@ stopifnot( all.equal(D0, expm(L.)) )
 
 ## A matrix for which clearly no logm(.) exists:
 (m <- cbind(1:2, 1))
-(l.m <- try(logm(m))) ## all NA or even error {on Solaris}
-\dontshow{ if(!inherits(l.m, "try-error")) stopifnot(is.na(l.m))
-}
+(l.m <- try(logm(m))) ## all NA {Warning in sqrt(S[ij, ij]) : NaNs produced}
+## on r-patched-solaris-x86, additionally gives
+##    Error in solve.default(X[ii, ii] + X[ij, ij], S[ii, ij] - sumU) :
+##     system is computationally singular: reciprocal condition number = 0
+##    Calls: logm ... logm.Higham08 -> rootS -> solve -> solve -> solve.default
+if(!inherits(l.m, "try-error")) stopifnot(is.na(l.m))
 ## The "Eigen" method  ``works''  but wrongly :
 expm(logm(m, "Eigen"))
 }

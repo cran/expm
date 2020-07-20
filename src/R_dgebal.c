@@ -21,7 +21,7 @@ static char ebal_type(const char *typstr)
 SEXP R_dgebal(SEXP x, SEXP type)
 {
     SEXP dims, z, Scale, i_1, i_2, ans, nms;
-    char typnm[] = {'\0', '\0'};
+    char typnm[] = {'\0', '\0'}; // only the first is changed; 2nd = final \0 string terminator
     int n, info, nprot = 2;
 
     if (!isNumeric(x) || !isMatrix(x))
@@ -64,7 +64,7 @@ SEXP R_dgebal(SEXP x, SEXP type)
 
     if(n > 0) {
 	F77_CALL(dgebal)(typnm, &n, REAL(z), &n, INTEGER(i_1), INTEGER(i_2),
-			 REAL(Scale), &info);
+			 REAL(Scale), &info FCONE);
 	if (info)
 	    error(_("LAPACK's dgebal(%s) returned info code %d"),
 		  typnm[0], info);

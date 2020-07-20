@@ -26,14 +26,12 @@ void expm_eigen(double *x, int n, double *z, double tol)
         z[0] = exp(x[0]);		/* scalar exponential */
     else
     {
-        const char *transa = "N";
         const int nsqr = n * n;
 
         const Rcomplex cone = {1., 0.}, czero = {0., 0.};
         int i, j;
         int info, lwork, is_conjug, is_diag;
         double onenorm, rcond, tmp;
-        char jobVL[1], jobVR[1];
 
         /* Arrays */
         int *ipiv = (int *) R_alloc(n, sizeof(int)); /* permutation vector */
@@ -51,23 +49,21 @@ void expm_eigen(double *x, int n, double *z, double tol)
 
         /* Test if x is diagonalisable by computing its eigenvalues and (right) eigenvectors */
         /* code based on modLa_rg in lapack.c, used in eigen.R */
-        jobVL[0] = 'N';
         left = (double *) 0;
-        jobVR[0] = 'V';
         right = (double *) R_alloc(nsqr, sizeof(double));
 
         /* 1 - ask for optimal size of work array */
         lwork = -1;
-        F77_CALL(dgeev)(jobVL, jobVR, &n, z, &n, wR, wI,
-			left, &n, right, &n, &tmp, &lwork, &info);
+        F77_CALL(dgeev)("N", "V", &n, z, &n, wR, wI,
+			left, &n, right, &n, &tmp, &lwork, &info FCONE FCONE);
         if (info != 0)
             error(_("error code %d from Lapack routine dgeev"), info);
         lwork = (int) tmp;
         workdiag = (double *) R_alloc(lwork, sizeof(double));
 
         /* 2 - compute eigenvalues and (right) eigenvectors */
-        F77_CALL(dgeev)(jobVL, jobVR, &n, z, &n, wR, wI,
-			left, &n, right, &n, workdiag, &lwork, &info);
+        F77_CALL(dgeev)("N", "V", &n, z, &n, wR, wI,
+			left, &n, right, &n, workdiag, &lwork, &info FCONE FCONE);
         if (info != 0)
             error(_("error code %d from Lapack routine dgeev"), info);
 
@@ -129,11 +125,12 @@ void expm_eigen(double *x, int n, double *z, double tol)
             /* compute the reciprocal condition number of eigvectinv. */
 
             /* 1 - compute the one norm of the matrix eigvectinv */
-            onenorm = F77_CALL(zlange)("1", &n, &n, eigvectinv, &n, (double*) NULL);
+            onenorm = F77_CALL(zlange)("1", &n, &n, eigvectinv, &n, (double*) NULL FCONE);
 
             /* 2 - estimates the reciprocal of the condition number
              * when the one norm is used. */
-            F77_CALL(zgecon)("1", &n, eigvectinv, &n, &onenorm, &rcond, worksing, rworksing, &info);
+            F77_CALL(zgecon)("1", &n, eigvectinv, &n, &onenorm, &rcond,
+			     worksing, rworksing, &info FCONE);
 
             if (rcond < tol)
                 is_diag=0;
@@ -171,12 +168,12 @@ void expm_eigen(double *x, int n, double *z, double tol)
             Memcpy(eigvect, ctmp, nsqr);
 
             /* 3 - compute (complex) matrix product: ctmp <- eigvect * expeigval */
-            F77_CALL(zgemm)(transa, transa, &n, &n, &n, &cone, eigvect, &n,
-			    expeigval, &n, &czero, ctmp, &n);
+            F77_CALL(zgemm)("N", "N", &n, &n, &n, &cone, eigvect, &n,
+			    expeigval, &n, &czero, ctmp, &n FCONE FCONE);
 
             /* 4 - compute (complex) matrix product: expeigval <- ctmp * eigvectinv */
-            F77_CALL(zgemm)(transa, transa, &n, &n, &n, &cone, ctmp, &n,
-			    eigvectinv, &n, &czero, expeigval, &n);
+            F77_CALL(zgemm)("N", "N", &n, &n, &n, &cone, ctmp, &n,
+			    eigvectinv, &n, &czero, expeigval, &n FCONE FCONE);
 
             /* store the real part in z */
             /* the matrix exponential is always real,

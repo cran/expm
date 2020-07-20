@@ -96,18 +96,18 @@ void expm(double *x, int n, double *z, precond_type precond_kind)
 		ihi = n;
 	    }
 	    else {
-		F77_CALL(dgebal)("P", &n, z, &n, &ilo, &ihi, perm, &info);
+		F77_CALL(dgebal)("P", &n, z, &n, &ilo, &ihi, perm, &info FCONE);
 		if (info)
 		    error(_("LAPACK routine dgebal returned info code %d when permuting"), info);
 	    }
 	    scale = (double *) R_alloc(n, sizeof(double));
-	    F77_CALL(dgebal)("S", &n, z, &n, &iloscal, &ihiscal, scale, &info);
+	    F77_CALL(dgebal)("S", &n, z, &n, &iloscal, &ihiscal, scale, &info FCONE);
 	    if (info)
 		error(_("LAPACK routine dgebal returned info code %d when scaling"), info);
 	}
 	else if(precond_kind == Ward_1) {
 
-	    F77_CALL(dgebal)("B", &n, z, &n, &ilo, &ihi, perm, &info);
+	    F77_CALL(dgebal)("B", &n, z, &n, &ilo, &ihi, perm, &info FCONE);
 	    if (info)
 		error(_("LAPACK' dgebal(\"B\",.) returned info code %d"), info);
 
@@ -119,7 +119,7 @@ void expm(double *x, int n, double *z, precond_type precond_kind)
 
 	/* Step 3 of preconditioning: Scaling according to infinity
 	 * norm (a priori always needed). */
-	infnorm = F77_CALL(dlange)("I", &n, &n, z, &n, work);
+	infnorm = F77_CALL(dlange)("I", &n, &n, z, &n, work FCONE);
 	sqrpowscal = (infnorm > 0) ? imax2((int) 1 + log(infnorm)/M_LN2, 0) : 0;
 	if (sqrpowscal > 0) {
 	    double scalefactor = R_pow_di(2, sqrpowscal);
@@ -138,13 +138,14 @@ void expm(double *x, int n, double *z, precond_type precond_kind)
 	{
 	    /* npp = z * npp + padec88[j] * z */
 	    F77_CALL(dgemm) ("N", "N", &n, &n, &n, &one, z, &n, npp,
-			     &n, &zero, work, &n);
+			     &n, &zero, work, &n FCONE FCONE);
+
 	    /* npp <- work + padec88[j] * z */
 	    for (i = 0; i < nsqr; i++)
 		npp[i] = work[i] + padec88[j] * z[i];
 	    /* dpp = z * dpp + (-1)^j * padec88[j] * z */
 	    F77_CALL(dgemm) ("N", "N", &n, &n, &n, &one, z, &n, dpp,
-			     &n, &zero, work, &n);
+			     &n, &zero, work, &n FCONE FCONE);
 	    for (i = 0; i < nsqr; i++)
 		dpp[i] = work[i] + m1pj * padec88[j] * z[i];
 	    m1pj *= -1; /* (-1)^j */
@@ -162,7 +163,7 @@ void expm(double *x, int n, double *z, precond_type precond_kind)
 	F77_CALL(dgetrf) (&n, &n, dpp, &n, pivot, &info);
 	if (info)
 	    error(_("LAPACK routine dgetrf returned info code %d"), info);
-	F77_CALL(dgetrs) ("N", &n, &n, dpp, &n, pivot, npp, &n, &info);
+	F77_CALL(dgetrs) ("N", &n, &n, dpp, &n, pivot, npp, &n, &info FCONE);
 	if (info)
 	    error(_("LAPACK routine dgetrs returned info code %d"), info);
 
@@ -173,7 +174,7 @@ void expm(double *x, int n, double *z, precond_type precond_kind)
 	while (sqrpowscal--)
 	{
 	    F77_CALL(dgemm)("N", "N", &n, &n, &n, &one, z, &n,
-			    z, &n, &zero, work, &n);
+			    z, &n, &zero, work, &n FCONE FCONE);
 	    Memcpy(z, work, nsqr);
 	}
 
