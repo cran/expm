@@ -309,7 +309,7 @@ re.x <- sapply(expmList, function(EXPM) relErr(Em.xct, EXPM(m)))
 ## with error message from "safe.Eigen"  -->  Eigen is NA here
 
 ## result depends quite a bit on platform
-which(is.na(re.x))
+which(is.na(re.x)) # gives  c(Eigen = 16L)  (but not everywhere ?!?)
 (re.x <- re.x[!is.na(re.x)])
 
 ## Pentium-M 32-bit ubuntu gave
@@ -341,7 +341,7 @@ stopifnot(re.x[c("Ward", "s.T.s", "s.T.sO")] < 3e-16,
 ems <- sapply(meths, function(met)
               tryCatch(expm::expm(m., method=met), error=identity))
 ok <- !sapply(ems, is, class="error")
-meths[ok] # only two, for now
-## "Higham08" "R_Pade"
+meths[ok] # now most... are
+
 
 showProc.time()

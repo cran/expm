@@ -9,12 +9,13 @@
   This LAPACK routine is used internally for Eigenvalue decompositions,
   but also, in Ward(1977)'s algorithm for the matrix exponential.
 
-  The name \code{balance()} is preferred nowadays, where \dQuote{dgebal}
-  will probably become deprecated.
+  The name \code{balance()} is preferred nowadays, and \dQuote{dgebal()}
+  has been deprecated (finally, after 9 years ...).
 }
 \usage{
 balance(A, job = c("B", "N", "P", "S"))
- dgebal(A, job = c("B", "N", "P", "S"))
+## Deprecated now:
+##   dgebal(A, job = c("B", "N", "P", "S"))
 }
 \arguments{
   \item{A}{a square (\eqn{n\times n}{n x n}) numeric matrix.}

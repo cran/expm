@@ -1,3 +1,24 @@
+2021-01-12  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/*.Rd: updates to \url{}s.
+
+2021-01-11  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/ex.R: raise one tolerance (for "M1 mac").
+
+2020-07-21  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.999-6
+
+	* R/balance.R (balance): now coerces to "matrix".  Also, 'dgebal()'
+	is finally deprecated *formally* (the help had: "balance()" is
+	preferred nowadays, where "dgebal" will probably become deprecated since 2011).
+
+	* demo/balanceTst.R (balanceTst): use balance(), not dgebal()
+
+	* tests/exact-ex.R: test that more expm(*, method=".") methods work with
+	sparse matrix.
+
 2020-07-16  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 0.999-5

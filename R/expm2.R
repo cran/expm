@@ -145,6 +145,5 @@ expm.AlMoHi09 <- function(x, p = 6)
     stopifnot(length(p <- as.integer(p)) == 1)
     if (p < 1 || p > 13)
         stop("Pade approximation order 'p' must be between 1 and 13.")
-
-    .Call(R_matexp_MH09, x, p)
+    .Call(R_matexp_MH09, if(is.numeric(x)) x else as(x, "matrix"), p)
 }

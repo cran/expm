@@ -53,7 +53,7 @@ expm.t.identity(m6, "Ward") ##  difference; indeed
 expm(m6) # is very different from
 expm(m6,"R_Pade")
 
-str(dm6 <- dgebalTst(m6))
+str(dm6 <- balanceTst(m6))
 ## Now, that's interesting:
 ##
 ## 1.  'S' scales *more* (2 .. 5) than just (2:4 == i1:i2) !
@@ -88,7 +88,7 @@ m17 <- matrix(c(10,0, 0, 2, 3,-1, 0, 0, 0, 0, 0, 4, 0, 5, 0, 0,-2,
                 0,-28,-29,0,0, 0,35, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                 0, 0, 0, 0, 0, 0,36,37, 0, 0, 0, 0, 0, 0, 0, 0,-10),
               17, 17)
-str(dm17 <- dgebalTst(m17))
+str(dm17 <- balanceTst(m17))
 sapply(dm17[1:3], `[[`, "scale")
 
 ## The balancing was really rather harmful -- cond(V) *not* improved:

@@ -9,9 +9,11 @@
 
 expm.s.Pade.s <- function(x, order, n=nrow(x)) {
     ## no checking here; this is not to be called by the user
+    ## try have this work with "mpfrMatrix" <==> solve(<mpfrArray>)
 
+    ## s := the number of [s]quarings
     e <- ceiling(log2(max(rowSums(abs(x)))))
-    s <- max(0, e+1)
+    s <- max(e+1, 0)
 
     ## preconditions x :
     x <- x / (2^s)
@@ -41,7 +43,8 @@ expm.s.Pade.s <- function(x, order, n=nrow(x)) {
 
 
 expm.methSparse <- c("Higham08", "R_Eigen", "R_Pade")
-## "FIXME" -- keep this list up-to-date - test by setting  R_EXPM_NO_DENSE_COERCION
+## keep this list up-to-date - test by setting  R_EXPM_NO_DENSE_COERCION
+## but NOTE: It may make sense to *keep* the message() about coercion to dense (memory blow up!)
 
 expm <- function(x, method = c("Higham08.b", "Higham08",
                     "AlMohy-Hi09",
@@ -78,7 +81,7 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 	       ## AUTHORS: Christophe Dutang, Vincent Goulet at act ulaval ca
 	       ##	 built on "Matrix" package, built on 'octave' code
 	       ##	 Martin Maechler, for the preconditioning etc
-               stopifnot(is.matrix(x))
+               if(!is.numeric(x)) x <- as(x, "matrix")
 	       switch(match.arg(preconditioning),
 		      "2bal" = .Call(do_expm, x, "Ward77"),
 		      "1bal" = .Call(do_expm, x, "Ward77_1"),
@@ -102,7 +105,7 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 	       ## AUTHOR: Christophe Dutang
 	       ## matrix exponential using eigenvalues / spectral decomposition and
 	       ## Ward(1977) algorithm if x is numerically non diagonalisable
-               stopifnot(is.matrix(x))
+               if(!is.numeric(x)) x <- as(x, "matrix")
 	       .Call(do_expm_eigen, x, tol)
 	   },
 	   "R_Pade"= { ## use scaling + Pade + squaring with R code:
@@ -167,9 +170,9 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 	       else x
 	   },
 	   "PadeRBS" =  { ## the "expofit" method by  Roger B. Sidje (U.Queensland, AU)
-	       stopifnot(is.matrix(x),
-			 (order <- as.integer(order)) >= 1)
-	       storage.mode(x) <- "double"
+               if(!is.numeric(x)) x <- as(x, "matrix")
+	       stopifnot((order <- as.integer(order)) >= 1)
+	       if(!is.double(x)) storage.mode(x) <- "double"
 	       Fobj <- .Fortran(matexpRBS,
 				order,		   # IDEG  1
 				as.integer(d[1]),  # M	   2
@@ -183,8 +186,8 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
            }
 	   , { ## the "mexp" methods by
 	       ## AUTHORS: Marina Shapira and David Firth --------------
-               stopifnot(is.matrix(x))
-	       storage.mode(x) <- "double"
+               if(!is.numeric(x)) x <- as(x, "matrix")
+	       if(!is.double(x)) storage.mode(x) <- "double"
 	       order <- as.integer(order)
 	       ## MM:	a "silly"  way to code the method / order
 	       ntaylor <- npade <- 0L

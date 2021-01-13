@@ -1,6 +1,6 @@
-dgebalTst <- function(A) {
+balanceTst <- function(A) {
 
-    ## Purpose: Consistency checking of	 dgebal()
+    ## Purpose: Consistency checking of	 balance() {was "dgebal()"}
     ## ----------------------------------------------------------------------
     ## Arguments: a square matrix
     ## ----------------------------------------------------------------------
@@ -8,7 +8,7 @@ dgebalTst <- function(A) {
 
     n <- dim(A)[1]
     ## do *the* three calls and look at result
-    P <- dgebal(A, "P")
+    P <- balance(A, "P")
 
     doPerm <- function(A, pp, i1, i2) {
         stopifnot(length(pp) == n, dim(A) == c(n,n),
@@ -58,7 +58,7 @@ dgebalTst <- function(A) {
     }
     checkPerm(P, orig.A = A)
 
-    S <- dgebal(P$z, "S")# "S" starting from result of "P"
+    S <- balance(P$z, "S")# "S" starting from result of "P"
     stopifnot(S$i1 == 1, S$i2 == n)
 
     ## Now check the scaling
@@ -75,7 +75,7 @@ dgebalTst <- function(A) {
     }
     checkScal(d = S$scale, A1 = P$z, A2 = S$z)
 
-    B <- dgebal(A, "B")# "B" : B[oth]
+    B <- balance(A, "B")# "B" : B[oth]
     stopifnot(P$i1 == B$i1, P$i2 == B$i2)
     ## now check *both* permutation and scaling
 
@@ -95,11 +95,11 @@ m4. <- rbind(c(-1,-2, 0, 0),
              c( 0, 0,10,11),
              c( 0, 0,12, 0),
              c( 0,13, 0, 0))
-str(b4. <- dgebalTst(m4.))
+str(b4. <- balanceTst(m4.))
 
 ## better (?) example
 (m <- matrix(c(0,-1,0,-2,10, rep(0,11)), 4,4))
-str(ba <- dgebalTst(m))
+str(ba <- balanceTst(m))
 ## Hmm: here S$z  *differs*  from B$z
 ## ---  but at least, the scale[] and z[] returned seem ok
 
@@ -108,8 +108,8 @@ str(ba <- dgebalTst(m))
 
 m4 <- matrix(outer(2^(0:7),c(-1,1)), 4,4)
 m4[lower.tri(m4)] <- 0 #--> upper triangular ==> will have many permutations
-## now permute it; so dgebal() will find the permutation
+## now permute it; so balance() will find the permutation
 p <- c(4,2:1,3); m4 <- m4[p,p]
 m4
 
-str(dm4 <- dgebalTst(m4)) # much permutation!  i1 = i2 = 1 !
+str(dm4 <- balanceTst(m4)) # much permutation!  i1 = i2 = 1 !

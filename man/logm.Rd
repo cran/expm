@@ -46,7 +46,7 @@ logm(x, method = c("Higham08", "Eigen"),
   Society for Industrial and Applied Mathematics, Philadelphia, PA, USA.
 
   The Matrix Logarithm is very nicely defined by Wikipedia,
-  \url{http://en.wikipedia.org/wiki/Matrix_logarithm}.
+  \url{https://en.wikipedia.org/wiki/Matrix_logarithm}.
 }
 \value{
   A matrix \sQuote{as \code{x}} with the matrix logarithm of \code{x},

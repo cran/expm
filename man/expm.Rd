@@ -125,7 +125,7 @@ expm(x, method = c("Higham08.b", "Higham08",
   Moler, C and van Loan, C (2003).  Nineteen dubious ways to compute
   the exponential of a matrix, twenty-five years later.
   \emph{SIAM Review} \bold{45}, 3--49.  At
-  \url{http://epubs.siam.org/doi/pdf/10.1137/S00361445024180}
+  \doi{10.1137/S00361445024180}
 
   Awad H. Al-Mohy and Nicholas J. Higham (2009)
   A New Scaling and Squaring Algorithm for the Matrix Exponential.

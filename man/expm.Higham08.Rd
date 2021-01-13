@@ -41,9 +41,9 @@ expm.Higham08(A, balancing = TRUE)
   Michael Stadelmann (2009).
   \emph{Matrixfunktionen; Analyse und Implementierung}.
   [in German] Master's thesis and Research Report 2009-12, SAM, ETH Zurich;
-  \url{http://www.sam.math.ethz.ch/reports/2009}, or
-  \url{ftp://ftp.sam.math.ethz.ch/pub/sam-reports/reports/reports2009/2009-12.pdf}.
-
+  \url{https://math.ethz.ch/sam/research/reports.html?year=2009}, or the
+  pdf directly at
+  \url{https://www.sam.math.ethz.ch/sam_reports/reports_final/reports2009/2009-12.pdf}.
 }
 \author{
   Michael Stadelmann (final polish by Martin Maechler).

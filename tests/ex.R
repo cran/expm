@@ -116,12 +116,12 @@ m3.t <- matrix(c(-1.50964415879218, -5.6325707998812, -4.934938326092,
                  0.135335281175235, 0.406005843524598, 0.541341126763207),
                3,3)
 
-stopifnot(all.equal(m3.t, m3,           check.attributes=FALSE, tolerance = 3e-11),
-					#			  ^^^^^
+stopifnot(all.equal(m3.t, m3,      check.attributes=FALSE, tolerance = 3e-11),
+                                        #                              ^^^^^
 					# 1.2455e-11 for libatlas (above)
-          all.equal(m3.t, m3T,          check.attributes=FALSE, tolerance = 1e-11),
-          all.equal(m3.t, m3O,          check.attributes=FALSE, tolerance = 1e-11),
-          all.equal(m3.t, m3TO,         check.attributes=FALSE, tolerance = 1e-11),
+          all.equal(m3.t, m3T,     check.attributes=FALSE, tolerance = 1e-11),
+          all.equal(m3.t, m3O,     check.attributes=FALSE, tolerance = 8e-11),# M1: 1.39e-11
+          all.equal(m3.t, m3TO,    check.attributes=FALSE, tolerance = 1e-11),
           all.equal(m3.t, expm(T3,"R_Eigen"), tolerance = 1e-11),
           all.equal(m3.t, expm(T3,"Ward77"), tolerance = 1e-11),
           all.equal(m3.t, expm(T3,"R_Ward"), tolerance = 1e-11),
