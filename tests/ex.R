@@ -54,7 +54,7 @@ if(!inherits(m1.2, "try-error")) {
     if(FALSE)## with libatlas R_Eigen is "sehr eigen"
     stopifnot(all.equal(m1.t, m1.2, check.attributes=FALSE))
     ## but it's less accurate:
-    print(all.equal(m1.t, m1.2, check.attributes=FALSE, tolerance= 1e-12))
+    print(    all.equal(m1.t, m1.2, check.attributes=FALSE, tolerance= 1e-12))
     ##-> rel.diff = 6.44e-10 / 6.2023e-10
     ##__ BUT  0.1228099
     ##__ with libatlas (ubuntu 12.04 libatlas-base-dev Version: 3.8.4-3build1)

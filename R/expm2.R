@@ -19,7 +19,8 @@ expm.Higham08 <- function(A, balancing=TRUE)
 {
     ## Check if A is square
     d <- dim(A)
-    if(length(d) != 2 || d[1] != d[2]) stop("'A' must be a square matrix")
+    if(length(d) != 2 || d[1] != d[2])
+	stop(gettextf("'%s' must be a square matrix", "A"), domain=NA)
     n <- d[1]
 
     if (n <= 1) return(exp(A))
@@ -141,7 +142,8 @@ expm.Higham08 <- function(A, balancing=TRUE)
 expm.AlMoHi09 <- function(x, p = 6)
 {
     d <- dim(x)
-    if(length(d) != 2 || d[1] != d[2]) stop("'x' must be a square matrix")
+    if(length(d) != 2 || d[1] != d[2])
+	stop(gettextf("'%s' must be a square matrix", "x"), domain=NA)
     stopifnot(length(p <- as.integer(p)) == 1)
     if (p < 1 || p > 13)
         stop("Pade approximation order 'p' must be between 1 and 13.")

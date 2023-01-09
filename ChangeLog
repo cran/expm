@@ -1,3 +1,17 @@
+2022-12-30  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Authors@): added, including ORCID for the 3 authors
+
+2022-12-21  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.999-7
+
+	* tests/ex.R: needed updates because ATLAS got precision deteriorated (!)
+
+2021-08-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* po/*, inst/po/*, R/*.R: more translations and small fixes.
+
 2021-01-12  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* man/*.Rd: updates to \url{}s.

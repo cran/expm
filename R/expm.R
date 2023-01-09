@@ -65,8 +65,8 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
     if(isM && checkSparse) { # i.e., a "dMatrix"
 	if(!(method %in% expm.methSparse) && is(x, "sparseMatrix")) {
 	    if(do.sparseMsg)
-		message("coercing to dense matrix, as required by method ",
-			dQuote(method))
+		message(gettextf("coercing to dense matrix, as required by method %s",
+                                 dQuote(method)), domain=NA)
 	    x <- as(x, "denseMatrix")
 	}
     }

@@ -24,7 +24,8 @@ sqrtm <- function(x) {
     ## Generate Basic informations of matrix x
     ## FIXME : should work for "Matrix" too, hence _not_  S <- as.matrix(x)
     d <- dim(x)
-    if(length(d) != 2 || d[1] != d[2]) stop("'x' must be a quadratic matrix")
+    if(length(d) != 2 || d[1] != d[2])
+        stop(gettextf("'%s' must be a square matrix", "x"), domain=NA)
 
     ##MM: No need to really check here; we get correct error msg later anyway
     ##	  and don't need to compute det() here, in the good cases !
@@ -37,7 +38,8 @@ sqrtm <- function(x) {
     ev <- Sch.x@EValues
     if(getOption("verbose") && any(abs(Arg(ev) - pi) < 1e-7))
         ## Let's see what works: temporarily *NOT* stop()ping :
-        message(sprintf("'x' has negative real eigenvalues; maybe ok for %s", "sqrtm()"))
+        message(gettextf("'x' has negative real eigenvalues; maybe ok for %s", "sqrtm()"),
+                domain=NA)
 
     S <- as.matrix(Sch.x@T)
     Q <- as.matrix(Sch.x@Q)
@@ -66,7 +68,7 @@ sqrtm <- function(x) {
 	l <- l+1L
     }
     if (is.null(R.index[[n-k]])) { # needed; FIXME: should be able to "know"
-        ##message(sprintf("R.index[n-k = %d]] is NULL, set to n=%d", n-k,n))
+        ##message(gettextf("R.index[n-k = %d]] is NULL, set to n=%d", n-k,n), domain=NA)
 	R.index[[n-k]] <- n
     }
 

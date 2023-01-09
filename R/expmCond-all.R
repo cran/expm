@@ -140,16 +140,14 @@ expmCond <- function(A, method = c("1.est", "F.est", "exact"),
     }
     ## 'G' = gamma now is our desired lower bound
 
-    ## Now, try another "lucky guess" and
-
-    ## *increase* G if the guess *was* lucky :
+    ## Now, try another "lucky guess" and increase G if the guess *was* lucky :
     for (l in 1:(n^2)) { ## FIXME: vectorize this!
         X[l] <- (-1)^(l+1) * (1+(l-1)/(n^2-1))
     }
     X <- expmFrechet(A,X, expm=FALSE)$Lexpm
     G. <- 2*sum(abs(X))/(3*n^2)
     if (G < G.) {
-        message("'lucky guess' was better")
+        message("'lucky guess' was better and is used for expmCond")
         G <- G.
     }
 
@@ -204,8 +202,8 @@ expmCond <- function(A, method = c("1.est", "F.est", "exact"),
             break
     }
     if(it > maxiter)
-	warning(sprintf("reached  maxiter = %d iterations; tolerances too small?",
-			maxiter))
+	warning(gettextf("reached  maxiter = %d iterations; tolerances too small?",
+                         maxiter), domain=NA)
 
     ##-------STEP 2 CALCULATE EXPONENTIALCONDITIONNUMBER--------------------
     cF <- G2*norm(A,"F") / norm(calc$expm,"F")
@@ -235,7 +233,9 @@ expmFrechet <- function(A,E, method = c("SPS","blockEnlarge"), expm = TRUE)
 
     ## Check if A is square
     d <- dim(A)
-    if(length(d) != 2 || d[1] != d[2]) stop("'A' must be a square matrix")
+    if(length(d) != 2 || d[1] != d[2])
+	stop(gettextf("'%s' must be a square matrix", "A"), domain=NA)
+
     stopifnot(is.matrix(E))
     if(!identical(d,dim(E))) stop("A and E need to have the same dimension")
     n <- d[1]

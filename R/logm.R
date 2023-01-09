@@ -9,7 +9,8 @@ logm <- function(x, method = c("Higham08", "Eigen"),
 {
     ## work with "Matrix" too: A<-as.matrix(A)
     d <- dim(x)
-    if(length(d) != 2 || d[1] != d[2]) stop("'x' must be a quadratic matrix")
+    if(length(d) != 2 || d[1] != d[2])
+	stop(gettextf("'%s' must be a square matrix", "x"), domain=NA)
 
     method <- match.arg(method)
     switch(method,

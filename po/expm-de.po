@@ -1,31 +1,31 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Translation of expm.pot to German
+# Copyright (C) 2021 Martin Maechler
 # This file is distributed under the same license as the expm package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Martin Maechler <maechler@ethz.ch>, 2021.
 #
 #, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: expm 0.999-6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-08-19 21:49+0200\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"POT-Creation-Date: 2021-08-19 20:28+0200\n"
+"PO-Revision-Date: 2021-08-19 21:14+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"Language-Team: German <LL@li.org>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: R_dgebal.c:11
-#, c-format
+#, c-format, fuzzy
 msgid "argument type='%s' must be a character string of string length 1"
-msgstr ""
+msgstr "Das Argument type=\"%s\" muss eine Buchstabenfolge der Länge 1 sein"
 
 #: R_dgebal.c:16
 #, c-format
 msgid "argument type='%s' must be one of 'N', 'P', 'S', or 'B'"
-msgstr ""
+msgstr "Das Argument type='%s' muss eines von 'N', 'P', 'S', oder 'B' sein"
 
 #: R_dgebal.c:28
 msgid "invalid 'x': not a numeric (classical R) matrix"
@@ -33,7 +33,7 @@ msgstr ""
 
 #: R_dgebal.c:32 expm-eigen.c:209 expm.c:307 logm-eigen.c:213 matpow.c:23
 msgid "non-square matrix"
-msgstr ""
+msgstr "keine quadratische Matrix"
 
 #: R_dgebal.c:46
 msgid "R_dgebal(*, type=\"S\"): Infinite matrix entry"

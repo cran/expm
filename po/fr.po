@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: expm 0.999-0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-10-01 09:33+0200\n"
+"POT-Creation-Date: 2021-08-19 20:28+0200\n"
 "PO-Revision-Date: 2007-11-20 13:56-0500\n"
 "Last-Translator: Vincent Goulet <vincent@vgoulet.act.ulaval.ca>\n"
 "Language-Team: Vincent Goulet <vincent@vgoulet.act.ulaval.ca>\n"
@@ -32,28 +32,32 @@ msgstr ""
 msgid "invalid 'x': not a numeric (classical R) matrix"
 msgstr ""
 
-#: R_dgebal.c:36 expm-eigen.c:214 expm.c:307 logm-eigen.c:219 matpow.c:23
+#: R_dgebal.c:32 expm-eigen.c:209 expm.c:307 logm-eigen.c:213 matpow.c:23
 msgid "non-square matrix"
 msgstr "matrice non carrée"
 
-#: R_dgebal.c:60
+#: R_dgebal.c:46
+msgid "R_dgebal(*, type=\"S\"): Infinite matrix entry"
+msgstr ""
+
+#: R_dgebal.c:69
 #, fuzzy, c-format
 msgid "LAPACK's dgebal(%s) returned info code %d"
 msgstr "la procédure LAPACK dgetrs a produit le code d'erreur %d"
 
-#: expm-eigen.c:64 expm-eigen.c:72 logm-eigen.c:68 logm-eigen.c:76
+#: expm-eigen.c:60 expm-eigen.c:68 logm-eigen.c:64 logm-eigen.c:72
 #, c-format
 msgid "error code %d from Lapack routine dgeev"
 msgstr ""
 
-#: expm-eigen.c:122 logm-eigen.c:126
+#: expm-eigen.c:118 logm-eigen.c:122
 #, c-format
 msgid "argument %d of Lapack routine dgesv had invalid value"
 msgstr ""
 
-#: expm-eigen.c:203 logm-eigen.c:213
-msgid "invalid argument"
-msgstr "argument incorrect"
+#: expm-eigen.c:200 expm.c:289
+msgid "invalid argument: not a numeric matrix"
+msgstr ""
 
 #: expm.c:101
 #, c-format
@@ -79,23 +83,23 @@ msgstr "la procédure LAPACK dgetrf a produit le code d'erreur %d"
 msgid "invalid 'precond_kind: %d"
 msgstr ""
 
-#: expm.c:164
+#: expm.c:165
 #, c-format
 msgid "LAPACK routine dgetrf returned info code %d"
 msgstr "la procédure LAPACK dgetrf a produit le code d'erreur %d"
 
-#: expm.c:167
+#: expm.c:168
 #, c-format
 msgid "LAPACK routine dgetrs returned info code %d"
 msgstr "la procédure LAPACK dgetrs a produit le code d'erreur %d"
 
-#: expm.c:288
-msgid "invalid argument: not a numeric matrix"
-msgstr ""
-
 #: expm.c:302
 #, fuzzy, c-format
 msgid "invalid 'kind' argument: %s\n"
+msgstr "argument incorrect"
+
+#: logm-eigen.c:207
+msgid "invalid argument"
 msgstr "argument incorrect"
 
 #: matpow.c:14

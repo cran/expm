@@ -68,7 +68,8 @@ logm.Higham08 <- function(x) {
     ev <- Sch.x@EValues
     if(getOption("verbose") && any(abs(Arg(ev) - pi) < 1e-7))
 ## Let's see what works: temporarily *NOT* stop()ping :
-	message(sprintf("'x' has negative real eigenvalues; maybe ok for %s", "logm()"))
+	message(gettextf("'x' has negative real eigenvalues; maybe ok for %s", "logm()"),
+                domain=NA)
     n <- Sch.x@Dim[1]
     Tr <- as.matrix(Sch.x@T)
     Q  <- as.matrix(Sch.x@Q)
@@ -83,10 +84,9 @@ logm.Higham08 <- function(x) {
         t <- norm(Tr - I, "1") # norm(x, .) : currently x is coerced to dgeMatrix
 	if(is.na(t)) {
 	    warning(sprintf(ngettext(k,
-				     "NA/NaN from %s after %d step.\n",
-				     "NA/NaN from %s after %d steps.\n"),
-			    " || Tr - I || ", k),
-		    "The matrix logarithm may not exist for this matrix.")
+				     "NA/NaN from  || Tr - I ||  after %d step.\n%s",
+				     "NA/NaN from  || Tr - I ||  after %d steps.\n%s"),
+                            k, "The matrix logarithm may not exist for this matrix."))
 	    return(array(t, dim=dim(Tr)))
 	}
         if (t < thMax) {
@@ -99,7 +99,7 @@ logm.Higham08 <- function(x) {
             }
         } else if(k > 20 && abs(t.o - t) < 1e-7*t) {
             ##
-	    warning(sprintf("Inverse scaling did not work (t = %g).\n", t),
+	    warning(gettextf("Inverse scaling did not work (t = %g).\n", t),
 		    "The matrix logarithm may not exist for this matrix.",
 		    "Setting m = 3 arbitrarily.")
             m <- 3
@@ -111,7 +111,7 @@ logm.Higham08 <- function(x) {
         k <- k+1
     }
     if(getOption("verbose"))
-	message(sprintf("logm.Higham08() -> (k, m) = (%d, %d)", k,m))
+	message(gettextf("logm.Higham08() -> (k, m) = (%d, %d)", k,m), domain=NA)
 
     ##------ Step 2: Padé-Approximation -----------------------------------------
 
@@ -179,7 +179,7 @@ rootS <- function(x) {
 	l <- l+1L
     }
     if (is.null(R.index[[n-k]])) { # needed; FIXME: should be able to "know"
-        ##message(sprintf("R.index[n-k = %d]] is NULL, set to n=%d", n-k,n))
+        ##message(gettextf("R.index[n-k = %d]] is NULL, set to n=%d", n-k,n), domain=NA)
 	R.index[[n-k]] <- n
     }
 
