@@ -7,6 +7,21 @@ source(system.file("test-tools.R", package= "expm"), keep.source=FALSE)
 ## presumably be improved still further by some tuning
 ## of these settings.
 
+### Latest ATLAS (for BDR on F 36; R-devel Oct.2023) has much worse precision:
+##==> use much larger tolerance in such cases:
+
+## Simplified (needs R 3.4.0 and newer, from robustbase/inst/xtraR/platform-sessionInfo.R ) :
+BLAS   <- extSoftVersion()[["BLAS"]]
+Lapack <- La_library()
+is.BLAS.Lapack <- identical(BLAS, Lapack)
+## A cheap check (that works on KH's debian-gcc setup, 2019-05):
+if(!length(BLAS.is.openBLAS <- grepl("openblas", BLAS, ignore.case=TRUE)))
+    BLAS.is.openBLAS <- NA
+if(!length(Lapack.is.openBLAS <- grepl("openblas", Lapack, ignore.case=TRUE)))
+    Lapack.is.openBLAS <- NA
+
+(maybeATLAS <- is.BLAS.Lapack && !BLAS.is.openBLAS)
+
 
 ## ----------------------------
 ## Test case 1 from Ward (1977)
@@ -149,13 +164,16 @@ T4 <-
 (m4T  <- expm(T4,method="Taylor"))
 (m4TO <- expm(T4,method="TaylorO"))
 
+## ATLAS on BDR's gannet (Fedora 26; gcc-13; R-devel 2023-10-24)
+tol1 <- if(maybeATLAS) 4e-7 else 5e-15 #  (m4, m4O) gave "Mean relative difference: 1.242879e-07"
+
 stopifnot(all.equal(m4  [,10], 1/gamma(10:1), tolerance=1e-14),
           all.equal(m4O [,10], 1/gamma(10:1), tolerance=1e-14),
           all.equal(m4T [,10], 1/gamma(10:1), tolerance=1e-14),
           all.equal(m4TO[,10], 1/gamma(10:1), tolerance=1e-14),
-	  all.equal(m4, m4O, check.attributes=FALSE, tolerance=5e-15),
-	  all.equal(m4, m4T, check.attributes=FALSE, tolerance=5e-15),
-	  all.equal(m4, m4TO,check.attributes=FALSE, tolerance=5e-15),
+	  all.equal(m4, m4O, check.attributes=FALSE, tolerance=tol1),
+	  all.equal(m4, m4T, check.attributes=FALSE, tolerance=tol1),
+	  all.equal(m4, m4TO,check.attributes=FALSE, tolerance=tol1),
           all.equal(m4, expm(T4,"Ward77"), check.attributes=FALSE, tolerance = 1e-14),
           all.equal(m4, expm(T4,"R_Ward"), check.attributes=FALSE, tolerance = 1e-14),
           all.equal(m4, expm(T4,"R_Pade"), check.attributes=FALSE, tolerance = 1e-14),

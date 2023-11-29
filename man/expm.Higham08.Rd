@@ -22,7 +22,7 @@ expm.Higham08(A, balancing = TRUE)
 }
 \details{
   The algorithm comprises the following steps
-  \enumerate{
+  \describe{
     \item{0.}{Balancing}
     \item{1.}{Scaling}
     \item{2.}{Padé-Approximation}
@@ -34,9 +34,10 @@ expm.Higham08(A, balancing = TRUE)
   a matrix of the same dimension as \code{A}, the matrix exponential of \code{A}.
 }
 \references{
-  Higham, N.~J. (2008).
+  Higham, Nicholas J. (2008).
   \emph{Functions of Matrices: Theory and Computation};
-  Society for Industrial and Applied Mathematics, Philadelphia, PA, USA.
+  SIAM (Society for Industrial and Applied Mathematics), Philadelphia, USA;
+  \doi{10.1137/1.9780898717778}
 
   Michael Stadelmann (2009).
   \emph{Matrixfunktionen; Analyse und Implementierung}.
@@ -48,10 +49,13 @@ expm.Higham08(A, balancing = TRUE)
 \author{
   Michael Stadelmann (final polish by Martin Maechler).
 }
+\note{
+  \code{expm.Higham8()} no longer needs to be called directly; rather
+  \code{expm(A, "Higham8b")} and \code{expm(A, "Higham8")} correspond to
+  the two options of \code{balancing = TRUE || FALSE}.
+}
 \seealso{
-  For now, the other algorithms \code{\link{expm}}.
-  \bold{This will change there will be one function with optional
-    arguments to chose the method !}.
+  The other algorithms \code{\link{expm}(x, method = *)}.
 
   \code{\link{expmCond}}, to compute the exponential-\emph{condition} number.
 }

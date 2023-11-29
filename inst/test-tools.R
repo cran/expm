@@ -84,7 +84,7 @@ rMat <- function(n, R_FUN = rnorm,
     ## Purpose: random square matrix "not close to singular"
     ## ----------------------------------------------------------------------
     ## Arguments:
-    ## NOTE: needs  Matrix::rcond()
+    ## NOTE: needs  Matrix::rcond() -- 2023-11: WHY? {it has more norm = "<c>", but..}
     ## ----------------------------------------------------------------------
     ## Author: Martin Maechler, Date: 19 Jan 2008
     ##

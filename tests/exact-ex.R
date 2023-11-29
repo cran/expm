@@ -92,6 +92,9 @@ if(!require("Matrix"))
 ##---> now use  expm::expm()  since Matrix has its own may mask the expm one
 ##              ^^^^^^^^^^^^
 
+if(!dev.interactive(orNone=TRUE)) pdf("expm_exact-ex.pdf")
+
+
 ## rMat() relies on Matrix::rcond():
 ## Now with the change default rcondMin, this "works"
 R40 <- rMat(40)
@@ -105,8 +108,8 @@ expm.safe.Eigen <- function(x, silent = FALSE) {
 
 ## the S4 generic
 Matrix::expm
-## the dgeMatrix method:
-expm.Matr.dge <- function(x) getDataPart(getMethod("expm", "dgeMatrix"))(Matrix::..2dge(x))
+## the dgeMatrix method - adapted to Matrix changes, had *more versatile*  ..2dge() :
+expm.Matr.dge <- function(x) getDataPart(getMethod("expm", "dgeMatrix"))(Matrix::.m2dense(x))
 expmList <-
     list(Matr = Matrix::expm,
          Matr.d = expm.Matr.dge,

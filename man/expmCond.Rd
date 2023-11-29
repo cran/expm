@@ -53,7 +53,7 @@ expmCond(A, method = c("1.est", "F.est", "exact"),
   \emph{Computing Fréchet Derivative of the Matrix Exponential, with an application
     to Condition Number Estimation}; MIMS EPrint 2008.26; Manchester
   Institute for Mathematical Sciences, U. Manchester, UK.
-  \url{http://eprints.ma.man.ac.uk/1218/01/covered/MIMS_ep2008_26.pdf}
+  \url{https://eprints.maths.manchester.ac.uk/1218/01/covered/MIMS_ep2008_26.pdf}
 
   Higham, N.~J. (2008).
   \emph{Functions of Matrices: Theory and Computation};

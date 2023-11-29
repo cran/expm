@@ -1,3 +1,12 @@
+2023-11-28  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.999-8
+
+	* tests/ex.R: ATLAS (Fedora 36, BDR) much less accurate -> using 'tol1'
+
+	* src/R_dgebal.c (R_dgebal): fixed `error(<format>)` thinko.
+	* man/expm.Higham08.Rd: Rd fixes.
+
 2022-12-30  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Authors@): added, including ORCID for the 3 authors
