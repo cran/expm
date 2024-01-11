@@ -1,3 +1,8 @@
+2024-01-11  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 0.999-9
+	* ... Matrix 1.6-5... needs to change a test !!
+
 2023-11-28  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 0.999-8

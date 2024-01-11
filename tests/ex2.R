@@ -85,7 +85,7 @@ stopifnot(expAtv(A3, v=c(0,0))$eAtv == 0)
 
 
 n <- 500
-A <- bandSparse(n,n, -1:1, diag = list(-(2:n), -5*(1:n), 1:(n-1)))
+A <- bandSparse(n,n, -1:1, diagonals = list(-(2:n), -5*(1:n), 1:(n-1)))
 v <- 100*(n:1)
 t.v <- showSys.time(rr <- expAtv(A, v=v))
 if(doExtras) { ## this is an order of magnitude slower :
@@ -126,7 +126,7 @@ r <- scl.e.Atv(A,v, s = sc) # at least without error
 ## -----                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 eAv[1,]
 assert.EQ.mat(unname( eAv[rep(1, length(sc)), ]),
-	      unname( eAv[1+2*seq_along(sc), ] ), tolerance=1e-14)
+	      unname( eAv[1+2*seq_along(sc), ] ), tol = 1e-14)
 					# 64-bit lynne: 2.7e-16 !!
 
 sc.Atv <- function(A,v, s) {

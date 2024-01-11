@@ -80,6 +80,12 @@ m4 <- rbind(c(-1,-1, 0, 0),
 (b4 <- balance(m4))
 
 ## --- for testing and didactical reasons : ----
+if(expm:::doExtras()) withAutoprint({
+    sessionInfo()
+    packageDescription("Matrix")
+    "expm installed at"
+    dirname(attr(packageDescription("expm"), "file"))
+})
 
 demo(balanceTst) # also defines the balanceTst() function
                 # which in its tests ``defines'' what

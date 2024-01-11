@@ -1,8 +1,8 @@
 Package: expm
 Type: Package
 Title: Matrix Exponential, Log, 'etc'
-Version: 0.999-8
-Date: 2023-11-28
+Version: 0.999-9
+Date: 2024-01-11
 Authors@R: c(person("Martin", "Maechler", role=c("aut","cre"),
                     email="maechler@stat.math.ethz.ch", comment = c(ORCID = "0000-0002-8685-9910"))
   , person("Christophe","Dutang", role = "aut", comment = c(ORCID = "0000-0001-6732-1501"))
@@ -24,7 +24,7 @@ URL: https://R-Forge.R-project.org/projects/expm/
 BugReports: https://R-forge.R-project.org/tracker/?atid=472&group_id=107
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2023-11-28 10:22:18 UTC; maechler
+Packaged: 2024-01-11 09:19:42 UTC; maechler
 Author: Martin Maechler [aut, cre] (<https://orcid.org/0000-0002-8685-9910>),
   Christophe Dutang [aut] (<https://orcid.org/0000-0001-6732-1501>),
   Vincent Goulet [aut] (<https://orcid.org/0000-0002-9315-5719>),
@@ -34,4 +34,4 @@ Author: Martin Maechler [aut, cre] (<https://orcid.org/0000-0002-8685-9910>),
   Michael Stadelmann [ctb] ("Higham08*" methods, see ?expm.Higham08...)
 Maintainer: Martin Maechler <maechler@stat.math.ethz.ch>
 Repository: CRAN
-Date/Publication: 2023-11-29 12:20:03 UTC
+Date/Publication: 2024-01-11 11:00:02 UTC

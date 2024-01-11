@@ -1,5 +1,9 @@
 library(expm)
 
+(sI <- sessionInfo())
+packageDescription("Matrix")
+packageDescription("expm")
+
 source(system.file("test-tools.R", package= "expm"), keep.source=FALSE)
 
 ## Note that these results are achieved with the default

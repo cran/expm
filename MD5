@@ -1,7 +1,7 @@
-c0eacbb3beb8b22379a0c22350554f09 *ChangeLog
-81a315669b53af1ef92c0c04af17730a *DESCRIPTION
+fffd6047121f37f44b94e5ddd70b00aa *ChangeLog
+468b8b60176a161101f630a214320bd4 *DESCRIPTION
 126f13f1117be0fcb55ba5ca4e6ffc97 *NAMESPACE
-1ccbe92c36ff0ce3d189dc3d87f1317c *R/balance.R
+addf62fa0032a6be26e9a38e6cfbd5b0 *R/balance.R
 40c90b349a501f474c14ea9a70016789 *R/expm.R
 34dfdc5f3fc2aff5c642eb1aca24d56b *R/expm2.R
 f15efdadae53fd8445cd9064188e7ac9 *R/expmCond-all.R
@@ -20,7 +20,7 @@ b544e04306e3002383308b520878ea59 *demo/00Index
 fa79ca82d01fb70f9267f5a9d0237041 *demo/expm.R
 07ac2c2c3add1d02cb9ecfbdfb2ac077 *inst/doc/expm.R
 61655a9c17ec4f2e874bc1ee2af64e96 *inst/doc/expm.Rnw
-afd100a683ee81984aade5eb0b0fa8a6 *inst/doc/expm.pdf
+02fe8b5ac1bd322ba55e4e6e5622f895 *inst/doc/expm.pdf
 959a1dbb1f1633688fa783b489503e7a *inst/po/de/LC_MESSAGES/R-expm.mo
 e1c6033c302666b96039a0c50fb0d5ee *inst/po/en@quot/LC_MESSAGES/R-expm.mo
 686ec00b0ae0f137c6f6edc3825e450c *inst/po/en@quot/LC_MESSAGES/expm.mo
@@ -28,7 +28,7 @@ e1c6033c302666b96039a0c50fb0d5ee *inst/po/en@quot/LC_MESSAGES/R-expm.mo
 26ad8d9fef04a4dd36adb264608be90f *inst/po/fr/LC_MESSAGES/expm.mo
 274e76f34f3671b5db44d6a1dbc701a9 *inst/po/fr/LC_MESSAGES/fr.mo
 267065beb76d42a8eaa2be71b625b1e9 *inst/test-tools.R
-f03fd2a41c35e8ff0a0d6d91468aa21b *man/balance.Rd
+235a59f917a71d3ace36849e8a748839 *man/balance.Rd
 2681415ac9d47fdf5223de806c84042d *man/expAtv.Rd
 f7816f7c3bda2912173c74ab79f58cb2 *man/expm.Higham08.Rd
 f6cdcde1348cee9b7856a306591c013c *man/expm.Rd
@@ -62,8 +62,8 @@ d4cda3837efeafa9bdf66bf5b51a4c1f *src/matrexpO.f
 1a8c861e1c2c64ab0af2c7742aac4acc *src/mexp-common.f
 a22fd1e243d0d2e96802f551a4ff7f28 *tests/Frechet-test.R
 1288143bff530d35a64f2b54b12b73dd *tests/bal-ex.R
-e444ebe0e28906a37a0337f81868fefe *tests/ex.R
-bc2c371adf98d0a651f016dd92d468cf *tests/ex2.R
+e2b8834d9fc7e5d6aa85fe9e2a729fbd *tests/ex.R
+91f26dcd2bbd9c02b19dec6692e9b820 *tests/ex2.R
 06ede83c4d2e0abee6fc8d3d13617f7a *tests/exact-ex.R
 a43d9bcf58d286dd0745b058b5b003ca *tests/expm-Cond.R
 ed2a4e750c0f271b198982795a272892 *tests/log+sqrt.R
