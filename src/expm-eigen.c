@@ -28,7 +28,7 @@ void expm_eigen(double *x, int n, double *z, double tol)
     {
         const int nsqr = n * n;
 
-        const Rcomplex cone = {1., 0.}, czero = {0., 0.};
+        const Rcomplex cone = { .r = 1., .i = 0.}, czero = { .r = 0., .i = 0.};
         int i, j;
         int info, lwork, is_conjug, is_diag;
         double onenorm, rcond, tmp;

@@ -1,12 +1,14 @@
 \name{expm}
 \alias{expm}
 \alias{mexp}% for now
+\alias{.methComplex}
+\alias{.methSparse}
 \title{Matrix Exponential}
 \description{
   This function computes the exponential of a square matrix
   \eqn{A}, defined as the sum from \eqn{r=0} to infinity of
   \eqn{A^r/r!}.
-  Several methods are provided. The Taylor series and Padé
+  Several methods are provided. The Taylor series and Pad\enc{é}{e'}
   approximation are very importantly combined with scaling and squaring.
 }
 \usage{
@@ -16,6 +18,10 @@ expm(x, method = c("Higham08.b", "Higham08",
                    "R_Eigen", "R_Pade", "R_Ward77", "hybrid_Eigen_Ward"),
      order = 8, trySym = TRUE, tol = .Machine$double.eps, do.sparseMsg = TRUE,
      preconditioning = c("2bal", "1bal", "buggy"))
+
+.methComplex # those 'method' s which also work for complex (number) matrices
+.methSparse  # those 'method' s which work with _sparseMatrix_ w/o coercion to dense
+
 }
 \arguments{
   \item{x}{a square matrix.}
@@ -40,7 +46,8 @@ expm(x, method = c("Higham08.b", "Higham08",
     \code{"Ward77"} algorithm.
   }
   \item{order}{an integer, the order of approximation to be used, for
-    the "Pade" and "Taylor" methods.  The best value for this depends on
+    the \code{"Pade"}, incl \code{"R_Ward77"}, and \code{"Taylor"} methods.
+    The best value for this depends on 
     machine precision (and slightly on \code{x}) but for the current
     double precision arithmetic, one recommendation (and the Matlab
     implementations) uses \code{order = 6} unconditionally;\cr
@@ -68,11 +75,13 @@ expm(x, method = c("Higham08.b", "Higham08",
   attribute of the result.  It is an upper bound for the L2 norm of the
   Cauchy error \code{expm(x, *, order + 10) - expm(x, *, order)}.
 
-  Currently, only algorithms which are \emph{\dQuote{\R-code only}} accept \emph{sparse}
+  Currently, mostly algorithms which are \emph{\dQuote{\R-code only}} accept \emph{sparse}
   matrices (see the
-  \code{\link[Matrix:sparseMatrix-class]{sparseMatrix}} class in package
-  \pkg{Matrix}), i.e., currently only \code{"R_Eigen"} and
-  \code{"Higham08"}.
+  \code{"\link[Matrix:sparseMatrix-class]{sparseMatrix}"} class in package
+  \CRANpkg{Matrix}).  Their \code{method} names are available from \code{.methSparse}.
+
+  Similarly only some of the algorithms are available for \code{\link{complex}} (number)
+  matrices; the corresponding \code{method}s are in \code{.methComplex}.
 }
 \value{
   The matrix exponential of \code{x}.
@@ -130,6 +139,7 @@ expm(x, method = c("Higham08.b", "Higham08",
   Awad H. Al-Mohy and Nicholas J. Higham (2009)
   A New Scaling and Squaring Algorithm for the Matrix Exponential.
   \emph{SIAM. J. Matrix Anal. & Appl.}, \bold{31}(3), 970--989.
+  \doi{10.1137/S00361445024180}
 }
 \note{
   For a good general discussion of the matrix exponential
@@ -233,15 +243,37 @@ max(abs(expm(test4, method="Pade") - expm(test4, method="R_Eigen")))
 ## of these settings.
 
 ##
-## example of computationally singular matrix
+## example of computationally singular matrix -> is nil-potent -> expm(m) = polynomial(m)
 ##
 m <- matrix(c(0,1,0,0), 2,2)
 try(
-expm(m, m="R_Eigen")
+expm(m, method="R_Eigen")
 )
 ## error since m is computationally singular
-expm(m, m="hybrid")
+(em <- expm(m, method="hybrid"))
 ## hybrid use the Ward77 method
+I2 <- diag(2)
+stopifnot(all.equal(I2 + m, expm(m)))
+
+## Try all methods --------------------------------------
+(meths <- eval(formals(expm)$method)) # >= 13 ..
+
+all3 <- sapply(meths, simplify = FALSE, function(mtd)
+    tryCatch(expm(test3, method = mtd), error = conditionMessage))
+## are all "equal" :
+stopifnot(
+    vapply(all3[-1], function(R) all.equal(all3[[1]], R, check.attributes=FALSE), NA))
+
+all4 <- sapply(meths, simplify = FALSE, function(mtd)
+    tryCatch(expm(test4, method = mtd), error = conditionMessage))
+
+### Try complex matrices --c--c--c--c--c--c--c--c--c--c--c--c--c--c--c
+.methComplex
+zm <- m*(1+1i) # is also nilpotent :
+stopifnot(zm \%*\% zm == 0, # is nilpotent already for ^2  ==> expm() is linear %
+          all.equal(I2 + zm, expm(zm)))
+
+## --->> more tests in ../tests/{ex,ex2,exact-ex}.R 
 }
 \keyword{algebra}
 \keyword{math}

@@ -15,7 +15,7 @@
 expm.Higham08(A, balancing = TRUE)
 }
 \arguments{
-  \item{A}{square matrix, may be a \code{"\linkS4class{sparseMatrix}"},
+  \item{A}{square matrix, may be a \code{"\link[Matrix:sparseMatrix-class]{sparseMatrix}"},
     currently only if \code{balancing} is false.}
   \item{balancing}{logical indicating if balancing should happen (before
     and after scaling and squaring).}

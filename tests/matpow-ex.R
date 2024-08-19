@@ -8,6 +8,7 @@ doExtras
 set.seed(17)
 n <- 300
 A <- matrix(rbinom(n^2, size=1, prob=0.1), n,n)
+stopifnot(is.integer(A))
 A2 <- A %^% 2
 for(i in 1:100) {
     A. <- A %^% 2
@@ -34,7 +35,7 @@ if(doExtras && require("sfsmisc") &&
     ## 16 Gb (= 17.78 e9 bytes)
     ## This __STILL__ takes hours
     cat("m %^% 2: "); print(system.time(m2 <- m %^% 2))
-    ##       user     system    elapsed 
+    ##       user     system    elapsed
     ## 127199.580   9608.373 137236.405  ==>
 
     cat("m %^% 4: "); print(system.time(m4 <- m %^% 4)) #

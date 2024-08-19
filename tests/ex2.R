@@ -4,7 +4,7 @@
 library(expm)
 
 source(system.file("test-tools.R", package= "expm"), keep.source=FALSE)
-## -> assertError()... doExtras
+## -> assertError(), .., expmAll(), allEq(),  doExtras
 
 ## --- 1 ---
 ## Here, all three {eigen; Taylor; Pade(Scaling & Squaring)} should do well
@@ -39,6 +39,7 @@ stopifnot(all.equal(mA1,
 A2 <- rbind(c(-147, 72),
             c(-192, 93))
 A2
+
 (mA2 <- expm(A2, method="Pade"))
 stopifnot(all.equal(mA2,
                     matrix(c(-0.099574136735459, -0.199148273470915,
@@ -48,12 +49,19 @@ mA2.T <- expm(A2, method = "Taylor")
 stopifnot(all.equal(mA2, mA2.T, tolerance=1e-10))
 all.equal(mA2, mA2.T, tolerance=1e-14)#-> 3.2e-12  {MM: I think that's pretty good}
 
+## Try all methods --------------------------------------
+(meths <- eval(formals(expm)$method)) # >= 13 ..
+L2 <- expmAll(A2)
+str(L2)
+str(allEq(L2, tol=0)) # -> max seen (Lnx 64): 2.7227e-12
+stopifnot(unlist(allEq(L2)))
+
 ## --- 3 ---
 ## Here, Eigenvalues  must fail ("not a full set"):
 A3 <- rbind(c(-1, 1),
             c(0, -1))
 (mA3 <- expm(A3, method="Pade"))
-assertError(expm(mA3, method="R_Eigen"))
+assertError(expm(mA3, method="R_Eigen"), verbose=TRUE)
 em1 <- exp(-1)
 stopifnot(all.equal(mA3, ## and the exact solution:
                     matrix(c(em1, 0, em1, em1), 2, 2),
@@ -61,6 +69,13 @@ stopifnot(all.equal(mA3, ## and the exact solution:
 
 ## using 'eps' instead of 0 :
 ## ---> see m2ex3() etc in ./exact-ex.R
+
+L3 <- expmAll(A3)
+str(L3) # R_Eigen -- ".. computationally singular .."
+L3. <- L3[names(L3) != "R_Eigen"]
+str(allEq(L3., tol=0)) # -> max seen (Lnx 64): AlMohy-Hi09 -- ".. rel.diff.: 4.8188e-9"
+stopifnot(unlist(allEq(L3., tol = 2e-8)))
+
 
 
 ## --- 4 ---
@@ -73,10 +88,22 @@ V <- rbind(c(sqrt(1/3), -sqrt(1/3)),
 ## ==>
 IV <- rbind(c( sqrt(3/4), sqrt(3/8)),
             c(-sqrt(3/4), sqrt(3/8)))
-stopifnot(all.equal(V %*% IV, diag(2)))
+V.IV <- V %*% IV
+all.equal(V.IV, diag(2), tolerance=0)
+stopifnot(all.equal(V.IV, diag(2)))
 em.true <- V %*% (exp(d) * IV)
+          all.equal(em.true, expm::expm(m), tolerance=0)
 stopifnot(all.equal(em.true, expm::expm(m)),
           all.equal(em.true, expm::expm(m,"Pade"), check.attributes=FALSE))
+
+L4 <- expmAll(m)
+str(L4)
+str(allEq(L4, tol=0)) # -> max seen (Lnx 64): AlMohy-Hi09 -- rel.diff.: 3.575281e-8
+stopifnot(unlist(allEq(L4, tol = 1e-7)))
+L4n09 <- L4[names(L4) != "AlMohy-Hi09"]
+str(allEq(L4n09, tol=0)) # -> max seen (Lnx 64): 2.8625e-15
+stopifnot(unlist(allEq(L4n09, tol = 1e-13)))
+
 
 ###----------- expAtv() ----------------
 

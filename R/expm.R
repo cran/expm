@@ -7,13 +7,15 @@
 ### where M is an (n x n) matrix.
 ###
 
-expm.s.Pade.s <- function(x, order, n=nrow(x)) {
-    ## no checking here; this is not to be called by the user
+expm.s.Pade.s <- function(x, order, n = nrow(x),
+                          ## s := the number of [s]quarings
+                          s = max(ceiling(log2(max(rowSums(abs(x)))))+1, 0)
+                          )
+{
+    stopifnot((order <- as.integer(order)) >= 2L)
+    if(!missing(s)) stopifnot((s <- as.integer(s)) >= 0L)
+    ## not much checking here; is not to be called by the user
     ## try have this work with "mpfrMatrix" <==> solve(<mpfrArray>)
-
-    ## s := the number of [s]quarings
-    e <- ceiling(log2(max(rowSums(abs(x)))))
-    s <- max(e+1, 0)
 
     ## preconditions x :
     x <- x / (2^s)
@@ -26,7 +28,7 @@ expm.s.Pade.s <- function(x, order, n=nrow(x)) {
     X <- x
     p <- TRUE
     for(k in 2:order) {
-	c <- c * (order-k+1) / (k*(2*order-k+1))
+	c <- c * (N <- order-k+1L) / k / (N + order)
 	X <- x %*% X # now  X = x ^ k
 	cX <- c*X
 	E <- E + cX
@@ -42,9 +44,11 @@ expm.s.Pade.s <- function(x, order, n=nrow(x)) {
 }
 
 
-expm.methSparse <- c("Higham08", "R_Eigen", "R_Pade")
+.methSparse <- c("Higham08", "R_Eigen", "R_Pade")
 ## keep this list up-to-date - test by setting  R_EXPM_NO_DENSE_COERCION
 ## but NOTE: It may make sense to *keep* the message() about coercion to dense (memory blow up!)
+
+.methComplex <- c("Higham08.b", "Higham08", "R_Eigen", "R_Pade", "R_Ward77")
 
 expm <- function(x, method = c("Higham08.b", "Higham08",
                     "AlMohy-Hi09",
@@ -56,14 +60,17 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 		 preconditioning = c("2bal", "1bal", "buggy"))
 {
     ## some methods work for "matrix", "Matrix", or "mpfrMatrix", iff solve(.,.) worked:
-    stopifnot(is.numeric(x) || (isM <- inherits(x, "dMatrix")) || inherits(x, "mpfrMatrix"))
+    isM <- isZ <- FALSE # (so we can use shortcut `||` )
+    stopifnot(is.numeric(x) || is.complex(x) || is.logical(x) ||
+              (isM <- inherits(x, "dMatrix") || inherits(x, "lMatrix")|| inherits(x, "iMatrix")) ||
+              inherits(x, "mpfrMatrix") || (isZ <- inherits(x, "zMatrix")))
     if(length(d <- dim(x)) != 2) stop("argument is not a matrix")
     if (d[1] != d[2]) stop("matrix not square")
     method <- match.arg(method)
     checkSparse <- !nzchar(Sys.getenv("R_EXPM_NO_DENSE_COERCION"))
-    isM <- !is.numeric(x) && isM
-    if(isM && checkSparse) { # i.e., a "dMatrix"
-	if(!(method %in% expm.methSparse) && is(x, "sparseMatrix")) {
+    ## no-op:  isM <- !is.numeric(x) && isM
+    if(isM && checkSparse) { # i.e., a "dMatrix", "iMatrix",..
+	if(!(method %in% .methSparse) && is(x, "sparseMatrix")) {
 	    if(do.sparseMsg)
 		message(gettextf("coercing to dense matrix, as required by method %s",
                                  dQuote(method)), domain=NA)
@@ -81,7 +88,7 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 	       ## AUTHORS: Christophe Dutang, Vincent Goulet at act ulaval ca
 	       ##	 built on "Matrix" package, built on 'octave' code
 	       ##	 Martin Maechler, for the preconditioning etc
-               if(!is.numeric(x)) x <- as(x, "matrix")
+               if(!is.atomic(x)) x <- as(x, "matrix")
 	       switch(match.arg(preconditioning),
 		      "2bal" = .Call(do_expm, x, "Ward77"),
 		      "1bal" = .Call(do_expm, x, "Ward77_1"),
@@ -94,18 +101,22 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 	       ## good for 'symmetric' or 'orthogonal' (or other 'normal' : A'A = AA' ):
 
 	       ## MM: improved from mexp2() with 'trySym' and isSymmetric()
+               isCplx <- isZ || is.complex(x) #  isSymmetric.*() also for cplx:
 	       isSym <- if(trySym) isSymmetric.matrix(x) else FALSE
 	       z <- eigen(x, symmetric = isSym)
 	       V <- z$vectors
 	       Vi <- if(isSym) t(V) else solve(V)
-	       Re(V %*% (    exp(z$values)   *	Vi)) ## ==
-	       ##(V %*% diag(exp(z$values)) %*% Vi)
+               if(isCplx)
+                   (  V %*% (    exp(z$values)   *	Vi))
+               else
+                   Re(V %*% (    exp(z$values)   *	Vi)) ## ==
+                   ##(V %*% diag(exp(z$values)) %*% Vi)
 	   },
 	   "hybrid_Eigen_Ward" = {
 	       ## AUTHOR: Christophe Dutang
 	       ## matrix exponential using eigenvalues / spectral decomposition and
 	       ## Ward(1977) algorithm if x is numerically non diagonalisable
-               if(!is.numeric(x)) x <- as(x, "matrix")
+               if(!is.atomic(x)) x <- as(x, "matrix")
 	       .Call(do_expm_eigen, x, tol)
 	   },
 	   "R_Pade"= { ## use scaling + Pade + squaring with R code:
@@ -116,7 +127,6 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 	       ## by Stig Mortensen <sbm@imm.dtu.dk>,
 	       ## prettified by MM -- works for "matrix" or "Matrix" matrices !
 
-	       stopifnot(order >= 2)
 	       expm.s.Pade.s(x, order, n=d[1])
 	   },
 	   "R_Ward77" = { ## R implementation of "Ward(1977)"
@@ -132,7 +142,7 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 
 	       ## Preconditioning  Step 2: balancing with balance.
 	       ##		   ------
-	       ## For now, do like the octave implementation
+	       ## For now, do as the octave implementation
 	       ## TODO later:  use "B" (faster; better condition of result)
 	       baP <- balance(x,     "P")
 	       baS <- balance(baP$z, "S")
@@ -170,8 +180,10 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 	       else x
 	   },
 	   "PadeRBS" =  { ## the "expofit" method by  Roger B. Sidje (U.Queensland, AU)
-               if(!is.numeric(x)) x <- as(x, "matrix")
-	       stopifnot((order <- as.integer(order)) >= 1)
+	       stopifnot((order <- as.integer(order)) >= 1L)
+               if(!is.atomic(x)) x <- as(x, "matrix")
+               if(is.complex(x)) stop(gettextf("expm(<complex>, method='%s') is not (yet) implemented",
+                                               method), domain=NA)
 	       if(!is.double(x)) storage.mode(x) <- "double"
 	       Fobj <- .Fortran(matexpRBS,
 				order,		   # IDEG  1
@@ -184,9 +196,11 @@ expm <- function(x, method = c("Higham08.b", "Higham08",
 		   stop("Unable to determine matrix exponential")
 	       Fobj[["H"]]
            }
-	   , { ## the "mexp" methods by
+	   , { ## the "mexp" methods {"Pade", "Taylor", "PadeO", "TaylorO"}, by
 	       ## AUTHORS: Marina Shapira and David Firth --------------
-               if(!is.numeric(x)) x <- as(x, "matrix")
+               if(!is.atomic(x)) x <- as(x, "matrix")
+               if(is.complex(x)) stop(gettextf("expm(<complex>, method='%s') is not (yet) implemented",
+                                               method), domain=NA)
 	       if(!is.double(x)) storage.mode(x) <- "double"
 	       order <- as.integer(order)
 	       ## MM:	a "silly"  way to code the method / order

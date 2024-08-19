@@ -19,9 +19,7 @@ nilA3 <- function(x,y,z) {
 }
 
 
-## Note that  relErr() is copy-pasted from ../inst/test-tools.R :
-##
-## The relative error typically returned by all.equal:
+## The relative error typically returned by all.equal -- simplified here
 relErr <- function(target, current)
     mean(abs(target - current)) / mean(abs(target))
 
@@ -36,10 +34,11 @@ facMat <- function(n, R_FUN, ev = R_FUN(n), M = rMat(n, R_FUN = R_FUN))
     ##            M:     n x n matrix. Note that the default,
     ##                   rMat() will give matrices ``not close to singular''
     ## ----------------------------------------------------------------------
-    ## Author: Martin Maechler, Date: Feb 2008
+    ## Author: Martin Maechler, Date: Feb 2008 / Aug. 2024 for <complex>
     R_FUN <- match.fun(R_FUN)
-    stopifnot(n > 0, is.numeric(ev), length(ev) == n,
-              dim(M) == c(n,n), is.numeric(M))
+    num <- is.numeric(ev)
+    stopifnot(n > 0, num || is.complex(ev), length(ev) == n,
+              dim(M) == c(n,n), is.numeric(M) || is.complex(M))
 
     iM <- solve(M)
     ## D <- diag(ev); A = M %*% D %*% iM

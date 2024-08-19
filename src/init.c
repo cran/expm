@@ -15,6 +15,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"do_expm", (DL_FUNC) &do_expm, 2},
     {"R_matpow", (DL_FUNC) &R_matpow, 2},
     {"R_dgebal", (DL_FUNC) &R_dgebal, 2},
+    {"R_zgebal", (DL_FUNC) &R_zgebal, 2},
     {"do_expm_eigen", (DL_FUNC) &do_expm_eigen, 2},
     {"do_logm_eigen", (DL_FUNC) &do_logm_eigen, 2},
     {"R_matexp_MH09", (DL_FUNC) &R_matexp_MH09, 2},

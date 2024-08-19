@@ -11,7 +11,7 @@
 x \%^\% k
 }
 \arguments{
-  \item{x}{a square \code{\link{matrix}}.}
+  \item{x}{a square \code{\link{matrix}}, \code{numeric} or \code{complex}.}
   \item{k}{an integer, \eqn{k \ge 0}{k >= 0}.}
 }
 \details{
@@ -40,6 +40,13 @@ A
 A \%^\% 2
 stopifnot(identical(A, A \%^\% 1),
           A \%^\% 2 == A \%*\% A)
+
+## also for complex number matrix  Z :
+Z <- A + 2i*A
+Z \%^\% 2
+stopifnot(identical(Z, Z \%^\% 1),
+          Z \%^\% 2 == Z \%*\% Z)
+
 }
 \keyword{array}
 \keyword{arith}

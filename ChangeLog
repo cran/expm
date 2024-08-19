@@ -1,3 +1,26 @@
+2024-08-19  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/exact-ex.R (osV): ensure valid in filename
+
+2024-08-08  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* inst/test-tools.R (expmAll, allEq): new functions for testing
+	all 'methods'.
+
+	* R/expm.R: export `.methSparse`  and  `.methComplex`
+
+2024-08-07  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* DESCRIPTION (Version): 1.0-0  ("it's about time")
+
+	* R/expm.R (expm): the default and other methods should work with
+	_complex_ matrices.
+
+	* src/R_dgebal.c (R_zgebal): new: balancing _complex_ matrices
+	* R/balance.R (balance): now works for complex matrices, too.
+
+	* src/matpow.c (matpow_z): new complex matrix powers \eqn{A^n}.
+
 2024-01-11  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* DESCRIPTION (Version): 0.999-9

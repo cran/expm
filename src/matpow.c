@@ -24,15 +24,19 @@ SEXP R_matpow(SEXP x, SEXP k)
 	if (n == 0)
 	    return(allocMatrix(REALSXP, 0, 0));
 
-	SEXP x_ = duplicate(x);	PROTECT_INDEX xpi;
+	SEXP z, x_ = duplicate(x); PROTECT_INDEX xpi;
 	PROTECT_WITH_INDEX(x_, &xpi);
-	if (!isReal(x)) /* coercion to numeric */
-	    REPROTECT(x_ = coerceVector(x_, REALSXP), xpi);
-	SEXP z = PROTECT(allocMatrix(REALSXP, n, n));
+	if(isComplex(x)) {
+	    z = PROTECT(allocMatrix(CPLXSXP, n, n));
+	    matpow_z(COMPLEX(x_), n, k_, COMPLEX(z));
+	} else { // real / double
+	    if (!isReal(x)) /* coercion to numeric */
+		REPROTECT(x_ = coerceVector(x_, REALSXP), xpi);
+	    z = PROTECT(allocMatrix(REALSXP, n, n));
+	    matpow(REAL(x_), n, k_, REAL(z));
+	}
 	setAttrib(z, R_DimNamesSymbol,
 		  getAttrib(x, R_DimNamesSymbol));
-	matpow(REAL(x_), n, k_, REAL(z));
-
 	UNPROTECT(2);
 	return z;
     }
@@ -80,6 +84,55 @@ void matpow(double *x, int n, int k, double *z)
 	    /* x := x * x */
 	    F77_CALL(dgemm)(transa, transa, &n, &n, &n, &one,
 			    x, &n, x, &n, &zero, tmp, &n FCONE FCONE);
+	    Memcpy(x, tmp, nSqr);
+	}
+    }
+}
+
+/* Compute z := x %^% k, x an (n x n) square "matrix" in column-order;
+ * NB: x will be altered! The caller must make a copy if needed */
+void matpow_z(Rcomplex *x, int n, int k, Rcomplex *z)
+{
+    if (k == 0) { /* return identity matrix */
+	for (int i = 0; i < n; i++)
+	    for (int j = 0; j < n; j++) {
+		z[i * n + j].r = (i == j) ? 1. : 0.;
+		z[i * n + j].i = 0.;
+	    }
+	return;
+    }
+    else if (k < 0) {
+	error(_("power must be a positive integer; use solve() directly for negative powers"));
+    }
+    else { /* k >= 1 */
+	static const char *transa = "N";
+	static const Rcomplex
+	    zone  = { .r = 1., .i = 0.},
+	    zzero = { .r = 0., .i = 0.};
+	size_t nSqr = n * ((size_t) n);
+	Rcomplex /* temporary matrix */
+	    *tmp  = (Rcomplex *) R_alloc(nSqr, sizeof(Rcomplex));
+
+	/* Take powers in multiples of 2 until there is only one
+	 * product left to make. That is, if k = 5, compute (x * x),
+	 * then ((x * x) * (x * x)) and finally ((x * x) * (x * x)) * x.
+	 */
+	Memcpy(z, x, nSqr);
+
+	k--;
+	while (k > 0) {
+	    if (k & 1) {	/* z := z * x */
+		F77_CALL(zgemm)(transa, transa, &n, &n, &n, &zone,
+				z, &n, x, &n, &zzero, tmp, &n FCONE FCONE);
+		Memcpy(z, tmp, nSqr);
+	    }
+	    if(k == 1)
+		break;
+	    k >>= 1; /* efficient division by 2; now have k >= 1 */
+
+	    /* x := x * x */
+	    F77_CALL(zgemm)(transa, transa, &n, &n, &n, &zone,
+			    x, &n, x, &n, &zzero, tmp, &n FCONE FCONE);
 	    Memcpy(x, tmp, nSqr);
 	}
     }

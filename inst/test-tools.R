@@ -119,5 +119,24 @@ rMat <- function(n, R_FUN = rnorm,
     M
 }
 
+##' call  expm(A, <meth>)  for (all possible) methods <meth> and do catch errors
+expmAll <- function(A, meths = eval(formals(expm)$method), errFUN = conditionMessage) {
+    if(!missing(meths)) stopifnot(meths %in% eval(formals(expm)$method))
+    sapply(meths, simplify = FALSE, function(mtd)
+        tryCatch(expm(A, method = mtd), error = errFUN))
+}
+
+##' Are they "equal" -- typically applied to result of expmAll()
+allEq <- function(Lst, iBest = 1L, check.attributes=FALSE, tol = 1e-10, ...) {
+    stopifnot(!is.na(iB <- as.integer(iBest)), length(iB) == 1L, 1L <= iB, iB <= length(Lst),
+              is.list(Lst))
+    sapply(Lst[-iB], simplify=FALSE, # not vapply() : result TRUE or "..."
+           function(R) all.equal(Lst[[iB]], R,
+                                 check.attributes=check.attributes, tolerance=tol, ...))
+}
+
+
+
+
 doExtras <- interactive() || nzchar(Sys.getenv("R_EXPM_CHECK_EXTRA")) ||
     identical("true", unname(Sys.getenv("R_PKG_CHECKING_doExtras")))

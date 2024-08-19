@@ -12,7 +12,7 @@ stopifnot(identical(mI, bal3$dN$z),
           with(bal3, all.equal(dB, dP, tol=1e-14)),
           all.equal(bal3$dB$z, rbind(c(Inf,-Inf,0,0), 0,0,0), tol=1e-14),
           all.equal(bal3$dB$scale, c(1,1,3,4)))
-assertError(dgebal(mI, "S"))# gave infinite loop
+assertError(dgebal(mI, "S"), verbose=TRUE)# gave infinite loop
 
 
 
@@ -29,8 +29,8 @@ summary(re20[re20 != 0])
 ##      Min.   1st Qu.    Median      Mean   3rd Qu.      Max.
 ## 2.593e-14 8.703e-14 1.282e-13 2.434e-13 4.177e-13 6.295e-13
 
-
 demo(balanceTst) #-> the function definition and the first few examples
+##   ==========
 
 dm4. <- dgebal(m4)
 storage.mode(m4) <- "integer"

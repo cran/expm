@@ -18,8 +18,8 @@ balance(A, job = c("B", "N", "P", "S"))
 ##   dgebal(A, job = c("B", "N", "P", "S"))
 }
 \arguments{
-  \item{A}{a square (\eqn{n\times n}{n x n}) numeric matrix.}
-  \item{job}{a one-letter string specifying the \sQuote{job} for DGEBAL.
+  \item{A}{a square (\eqn{n\times n}{n x n}) numeric, logical or complex matrix.}
+  \item{job}{a one-letter string specifying the \sQuote{job} for DGEBAL / ZGEBAL.
     \describe{
       \item{P}{\bold{P}ermutation}
       \item{S}{\bold{S}caling}
@@ -38,12 +38,12 @@ balance(A, job = c("B", "N", "P", "S"))
     \code{ILO} and \code{IHI} respectively in the LAPACK
     documentation.  Only relevant for \code{"P"} or \code{"B"}, they
     describe where permutations and where scaling took place; see the
-    Details section.
+    \sQuote{Details} section.
   }
 }
 \details{
-  An excerpt of the LAPACK documentation about DGEBAL(), describing the
-  result
+  An excerpt of the LAPACK documentation about \code{DGEBAL()} or
+  \code{ZGEBAL()}, respectively, describing the result
   \describe{
     \item{i1 ("ILO")}{(output) integer}
     \item{i2 ("IHI")}{(output) integer\cr
@@ -67,7 +67,9 @@ balance(A, job = c("B", "N", "P", "S"))
   Look at the LAPACK documentation for more details.
 }
 \references{
-  LAPACK Reference Manual
+  LAPACK Reference Manual, \url{https://netlib.org/lapack/},
+  balancing \sQuote{gebal}, currently at
+  \url{https://www.netlib.org/lapack/explore-html/df/df3/group__gebal.html}.
 }
 \author{Martin Maechler}
 \seealso{\code{\link{eigen}}, \code{\link{expm}}.

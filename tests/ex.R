@@ -148,6 +148,16 @@ stopifnot(all.equal(m3.t, m3,      check.attributes=FALSE, tolerance = 3e-11),
           TRUE)
 ## -- in this case, a similar level of agreement with Ward (1977).
 
+##-------- expm(<complex>) -------------------
+
+z3 <- T3 * (1 + 1i)
+Lz3 <- expmAll(z3)
+str(Lz3)
+Lz3. <- Lz3[.methComplex]
+str(allEq(Lz3., tol=0)) # -> max seen (Lnx 64): 1.3376e-12
+stopifnot(unlist(allEq(Lz3.)))
+
+
 ## ----------------------------
 ## Test case 4 from Ward (1977)
 ## ----------------------------

@@ -39,11 +39,12 @@ expAtv(A, v, t = 1,
   EXPOKIT: Software Package for Computing Matrix Exponentials.
   \emph{ACM - Transactions On Mathematical Software} \bold{24}(1), 130--156.
 
-((NOT yet available!))\cr%% i.e., in expm  package, but see ../Misc/README and ../Misc/expmv/
+(\bold{Not} yet available in our \pkg{expm} package!)\cr%% but see ../Misc/README and ../Misc/expmv/
   Al-Mohy, A. and Higham, N. (2011).
   Computing the Action of the Matrix Exponential, with an Application
   to Exponential Integrators.
   \emph{SIAM Journal on Scientific Computing}, \bold{33}(2), 488--511.
+  \doi{10.1137/100788860}
 %% @article{doi:10.1137/100788860,
 %%   author =	{Al-Mohy, A. and Higham, N.},
 %%   title =	{Computing the Action of the Matrix Exponential, with an

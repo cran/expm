@@ -1,2 +1,6 @@
 #	as for a -*- Makefile -*-   we use the BLAS and the LAPACK library:
 PKG_LIBS = $(LAPACK_LIBS) $(BLAS_LIBS) $(FLIBS)
+
+#  want  CMPLX() which needs C11 standard
+#  (ok, not yet:)
+#CFLAGS = "-std=C11 $(CFLAGS)"

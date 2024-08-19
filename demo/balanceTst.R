@@ -95,13 +95,16 @@ m4. <- rbind(c(-1,-2, 0, 0),
              c( 0, 0,10,11),
              c( 0, 0,12, 0),
              c( 0,13, 0, 0))
+
+op <- options(str = strOptions(vec.len = 12))
 str(b4. <- balanceTst(m4.))
+with(b4., all.equal(P, B)) # TRUE (everywhere?)
 
 ## better (?) example
 (m <- matrix(c(0,-1,0,-2,10, rep(0,11)), 4,4))
 str(ba <- balanceTst(m))
-## Hmm: here S$z  *differs*  from B$z
-## ---  but at least, the scale[] and z[] returned seem ok
+(eq <- with(ba, all.equal(S$z, B$z))) # TRUE now (everywhere?)
+ba$Sz.eq.Bz # ditto
 
 
 ## a non-empty ``less-balanced'' example  ---
@@ -113,3 +116,17 @@ p <- c(4,2:1,3); m4 <- m4[p,p]
 m4
 
 str(dm4 <- balanceTst(m4)) # much permutation!  i1 = i2 = 1 !
+
+##----------- Complex examples
+zba4 <- balanceTst(m4 + 3i * m4)
+str(zba4)
+
+zba <-  balanceTst(m*(1 + 1i))
+str(zba)
+stopifnot(exprs = {
+    all.equal(ba$ S$z, Re(zba$ S$z))
+    all.equal(ba$ S$z, Im(zba$ S$z))
+    all.equal(dm4$ S$z,     Re(zba4$ S$z))
+    all.equal(dm4$ S$z * 3, Im(zba4$ S$z))
+})
+options(op) # revert

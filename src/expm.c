@@ -55,6 +55,7 @@ void expm(double *x, int n, double *z, precond_type precond_kind)
 	/* Constants */
 	const double one = 1.0, zero = 0.0;
 	const int i1 = 1, nsqr = n * n, np1 = n + 1;
+	const Rboolean do_scale = (precond_kind == Ward_2 || precond_kind == Ward_buggy_octave);
 	/* Variables */
 	int i, j, is_uppertri = TRUE;;
 	int ilo, ihi, iloscal, ihiscal, info, sqrpowscal;
@@ -62,7 +63,8 @@ void expm(double *x, int n, double *z, precond_type precond_kind)
 
 	/* Arrays */
 	int *pivot    = (int *) R_alloc(n, sizeof(int)); /* pivot vector */
-	double *scale; /* scale array */
+	double *scale =
+	    do_scale ?  (double *) R_alloc(n, sizeof(double)) : NULL; /* scale array */
 	double *perm  = (double *) R_alloc(n, sizeof(double));/* permutation/sc array */
 
 	double *work  = (double *) R_alloc(nsqr, sizeof(double)); /* workspace array */
@@ -89,7 +91,7 @@ void expm(double *x, int n, double *z, precond_type precond_kind)
 		z[i * np1] -= trshift;
 
 	/* Step 2 of preconditioning: balancing with dgebal. */
-	if(precond_kind == Ward_2 || precond_kind == Ward_buggy_octave) {
+	if(do_scale) {
 	    if (is_uppertri) {
 		/* no need to permute if x is upper triangular */
 		ilo = 1;
@@ -100,7 +102,6 @@ void expm(double *x, int n, double *z, precond_type precond_kind)
 		if (info)
 		    error(_("LAPACK routine dgebal returned info code %d when permuting"), info);
 	    }
-	    scale = (double *) R_alloc(n, sizeof(double));
 	    F77_CALL(dgebal)("S", &n, z, &n, &iloscal, &ihiscal, scale, &info FCONE);
 	    if (info)
 		error(_("LAPACK routine dgebal returned info code %d when scaling"), info);
@@ -183,7 +184,7 @@ void expm(double *x, int n, double *z, precond_type precond_kind)
 	 * ------------------ Note that dgebak() seems *not* applicable */
 
 	/* Step 2 a)  apply inverse scaling */
-	if(precond_kind == Ward_2 || precond_kind == Ward_buggy_octave) {
+	if(do_scale) {
 	    for (j = 0; j < n; j++)
 		for (i = 0; i < n; i++)
 		    z[i + j * n] *= scale[i]/scale[j];

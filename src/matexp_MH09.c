@@ -1,5 +1,5 @@
-/* Copyright (C) 2013-2014 Drew Schmidt.
-   Copyright (C) 2014      Martin Maechler
+/* Copyright (C) 2014-2024 Martin Maechler
+   Copyright (C) 2013-2014 Drew Schmidt
 
   This program is free software; you can redistribute it and/or modify it under
   the terms of the GNU General Public License as published by the Free Software
@@ -94,6 +94,7 @@ static int matexp_scale_factor(const double *x, const int n)
     const double theta[] = {1.5e-2, 2.5e-1, 9.5e-1, 2.1e0, 5.4e0};
     const double x_1 = matnorm_1(x, n);
 
+    // MM: the following seems logically wrong: the theta[0:3] are *not* really relevant, just need
     for (int i=0; i < NTHETA; i++) {
 	if (x_1 <= theta[i])
 	    return 0;
@@ -164,17 +165,17 @@ const double matexp_pade_coefs[14] =
    and q_m(x) = p_m(-x)
 */
 
-// Workhorse for matexp_pade
+// Workhorse for matexp_pade -- given C, do B := C & update (N, D)
 void matexp_pade_fillmats(const int m, const int n, const int i,
-			  double *N, double *D, double *B, double *C)
+			  double *N, double *D, double *B, const double *C)
 {
   const double tmp = matexp_pade_coefs[i];
   const int sgn = SGNEXP(-1, i);
 
     /* Performs the following actions:
         B = C
-        N = pade_coef[i] * C
-        D = (-1)^j * pade_coef[i] * C
+        N +=          pade_coef[i] * C
+        D += (-1)^i * pade_coef[i] * C
     */
     for (int j=0; j < m*n; j++) {
 	double t_j = C[j]; B[j] = t_j;
@@ -201,10 +202,8 @@ static void matexp_pade(int n, const int p, double *A, double *N)
 
     // Power of A
     double *B = (double*) R_alloc(n2, sizeof(double));
-
     // Temporary storage for matrix multiplication;  matcopy(n, A, C);
     double *C = Memcpy((double*)R_alloc(n2, sizeof(double)), A, n2);
-
     double *D = (double*) R_alloc(n2, sizeof(double));
 
     for (i=0; i<n*n; i++) {
@@ -232,10 +231,9 @@ static void matexp_pade(int n, const int p, double *A, double *N)
 	matexp_pade_fillmats(n, n, i, N, D, B, C);
     }
 
-    // R <- inverse(D) %*% N
+    // return  N := inverse(D) %*% N -------------------
     int *ipiv = (int *) R_alloc(n, sizeof(int));
     /* assert(ipiv != NULL); */
-
     F77_CALL(dgesv)(&n, &n, D, &n, ipiv, N, &n, &info);
 
 } // matexp_pade()
@@ -257,6 +255,7 @@ void matexp_MH09(double *x, int n, const int p, double *ret)
       matexp_pade(n, p, x, ret);
       return;
   }
+  // else,  m >= 1 :
 
   int nn = n*n, one = 1;
   double tmp = 1. / ((double) m);
@@ -270,6 +269,27 @@ void matexp_MH09(double *x, int n, const int p, double *ret)
   matpow_by_squaring(x, n, m, ret);
 }
 
+#if 0 // >>>>>>>>>>> FIXME: Not yet, does not even compile  -- (and hence not yet called) <<<<<<<<<
+
+void matexp_MH09_z(Rcomplex *x, int n, const int p, Rcomplex *ret)
+{
+  int m = matexp_scale_factor(x, n);
+
+  if (m == 0) {
+      matexp_pade(n, p, x, ret);
+      return;
+  }
+
+  int nn = n*n, one = 1;
+  Rcomplex tmp = 1. / ((Rcomplex) m);
+
+  F77_CALL(dscal)(&nn, &tmp, x, &one);
+
+  matexp_pade(n, p, x, ret);
+  matcopy(n, ret, x);
+  matpow_by_squaring(x, n, m, ret);
+}
+#endif
 
 
 // --------------------------------------------------------
@@ -279,17 +299,26 @@ void matexp_MH09(double *x, int n, const int p, double *ret)
 SEXP R_matexp_MH09(SEXP x, SEXP p)
 {
     const int n = nrows(x), n2 = n*n;
-    SEXP R = PROTECT(allocMatrix(REALSXP, n, n));
     SEXP x_ = duplicate(x); PROTECT_INDEX xpi;
     PROTECT_WITH_INDEX(x_, &xpi);
-    if (!isReal(x)) /* coercion to numeric */
+    Rboolean is_C = isComplex(x);
+    if(is_C) {
+    } else if(!isReal(x)) /* coercion to 'Real' numeric */
 	REPROTECT(x_ = coerceVector(x_, REALSXP), xpi);
+    SEXP R = PROTECT(allocMatrix(TYPEOF(x_), n, n));
+    if(isComplex(x)) {
+	error(_("matexp_MH09(.) is _not yet_ implemented for complex matrices"));
+#if 0 // see above
+	// MM{FIXME}: We have already duplicated x to x_ : this should *not* be needed:
+	Rcomplex *x_cp = Memcpy((Rcomplex*)R_alloc(n2, sizeof(Rcomplex)), COMPLEX(x_), n2);
+	matexp_MH09_z(x_cp, n, INTEGER(p)[0], COMPLEX(R));
+# endif
 
-    // MM{FIXME}: We have already duplicated x to x_ : this should *not* be needed:
-    double *x_cp = Memcpy((double*)R_alloc(n2, sizeof(double)), REAL(x_), n2);
-
-    matexp_MH09(x_cp, n, INTEGER(p)[0], REAL(R));
-
+    } else { // isReal(x_)
+	// MM{FIXME}: We have already duplicated x to x_ : this should *not* be needed:
+	double *x_cp = Memcpy((double*)R_alloc(n2, sizeof(double)), REAL(x_), n2);
+	matexp_MH09(x_cp, n, INTEGER(p)[0], REAL(R));
+    }
     UNPROTECT(2);
     return R;
 }

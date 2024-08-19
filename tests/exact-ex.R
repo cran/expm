@@ -2,12 +2,12 @@
 
 library(expm)
 
-options(digits = 4, width = 90, keep.source = FALSE)
+options(digits = 4, width = 99, keep.source = FALSE)
 
 mSource <- function(file, ...)
     source(system.file(file, ..., package = "expm", mustWork=TRUE))
 mSource("test-tools.R")## -> assertError(), rMat(), .. doExtras
-mSource("demo", "exact-fn.R")
+mSource("demo", "exact-fn.R")# -> nilA3(), facMat(), m2ex3(), ....
 doExtras
 
 re.nilA3 <- function(xyz, EXPMlist)
@@ -22,7 +22,7 @@ re.facMat <- function(n, EXPMlist, rFUN = rnorm, ...)
     stopifnot(is.list(EXPMlist))
     r <- facMat(n, rFUN, ...)
     vapply(EXPMlist, function(EXPM) {
-	ct <- system.time(E <- EXPM(r$A), gc = FALSE)[[1]]
+	ct <- system.time(E <- EXPM(r$A), gcFirst = FALSE)[[1]]
 	c(relErr = relErr(r$expA, E), c.time = ct)
     }, double(2))
 }
@@ -92,7 +92,16 @@ if(!require("Matrix"))
 ##---> now use  expm::expm()  since Matrix has its own may mask the expm one
 ##              ^^^^^^^^^^^^
 
-if(!dev.interactive(orNone=TRUE)) pdf("expm_exact-ex.pdf")
+(osV <- abbreviate(gsub("[^[:alnum:]]", '', sub("\\(.*", '', osVersion)), 12))
+if(!dev.interactive(TRUE)) pdf(paste0("expm_exact-ex_", osV, ".pdf"), width = 9, height=5)
+##
+myRversion <- paste(R.version.string, "--", osVersion)
+if((mach <- Sys.info()[["machine"]]) != "x86_64")
+    myRversion <- paste0(myRversion, "_", mach)
+if(!capabilities("long.double"))
+    myRversion <- paste0(myRversion, "_no_LDbl")
+myRversion
+## in plots use   mtext(myRversion, adj=1, cex=3/4)
 
 
 ## rMat() relies on Matrix::rcond():
@@ -110,65 +119,96 @@ expm.safe.Eigen <- function(x, silent = FALSE) {
 Matrix::expm
 ## the dgeMatrix method - adapted to Matrix changes, had *more versatile*  ..2dge() :
 expm.Matr.dge <- function(x) getDataPart(getMethod("expm", "dgeMatrix"))(Matrix::.m2dense(x))
+
 expmList <-
     list(Matr = Matrix::expm,
-         Matr.d = expm.Matr.dge,
-         Ward  = function(x) expm::expm(x, "Ward77"),
-	 s.P.s = function(x) expm::expm(x, "Pade"),
-	 s.P.sO= function(x) expm::expm(x, "PadeO"),
-	 s.P.sRBS= function(x) expm::expm(x, "PadeRBS"),
-	 sPs.H08.= function(x) expm:: expm.Higham08(x, balancing=FALSE),
-	 sPs.H08b= function(x) expm:: expm.Higham08(x, balancing= TRUE),
-	 AmHi09.06= function(x) expm:::expm.AlMoHi09(x, p =  6),
-	 AmHi09.08= function(x) expm:::expm.AlMoHi09(x, p =  8),
+         Matr.d   = expm.Matr.dge,
+         Ward     = function(x) expm::expm(x, "Ward77"),
+         Ward1b   = function(x) expm::expm(x, "Ward77", preconditioning = "1bal"),
+         RWard6   = function(x) expm::expm(x, "R_Ward77", order = 6),
+         RWard7   = function(x) expm::expm(x, "R_Ward77", order = 7),
+         RWard8   = function(x) expm::expm(x, "R_Ward77", order = 8), # default
+         RWard9   = function(x) expm::expm(x, "R_Ward77", order = 9),
+	 s.P.s7   = function(x) expm::expm(x, "Pade", order = 7),
+	 s.POs7   = function(x) expm::expm(x, "PadeO",order = 7),
+	 s.P.s8   = function(x) expm::expm(x, "Pade" ,order = 8), # default
+	 s.POs8   = function(x) expm::expm(x, "PadeO",order = 8), # default
+	 s.P.s9   = function(x) expm::expm(x, "Pade", order = 9),
+	 s.POs9   = function(x) expm::expm(x, "PadeO",order = 9),
+	 s.P.sRBS = function(x) expm::expm(x, "PadeRBS"),
+	 Rs.P.s7  = function(x) expm::expm(x, "R_Pade", order = 7),
+	 Rs.P.s8  = function(x) expm::expm(x, "R_Pade", order = 8), # default
+	 Rs.P.s9  = function(x) expm::expm(x, "R_Pade", order = 9),
+	 sPs.H08. = function(x) expm:: expm.Higham08(x, balancing=FALSE),
+	 sPs.H08b = function(x) expm:: expm.Higham08(x, balancing= TRUE),
+	 ## AmHi09.06= function(x) expm:::expm.AlMoHi09(x, p =  6),
+	 AmHi09.07= function(x) expm:::expm.AlMoHi09(x, p =  7),
+	 AmHi09.08= function(x) expm:::expm.AlMoHi09(x, p =  8), # default -- really sub optimal
+	 AmHi09.09= function(x) expm:::expm.AlMoHi09(x, p =  9),
 	 AmHi09.10= function(x) expm:::expm.AlMoHi09(x, p = 10),
+	 AmHi09.11= function(x) expm:::expm.AlMoHi09(x, p = 11),
 	 AmHi09.12= function(x) expm:::expm.AlMoHi09(x, p = 12),
 	 AmHi09.13= function(x) expm:::expm.AlMoHi09(x, p = 13),
-	 s.T.s = function(x) expm::expm(x, "Taylor"),
-	 s.T.sO= function(x) expm::expm(x, "TaylorO"),
-	 Eigen = expm.safe.Eigen,
-	 hybrid= function(x) expm::expm(x, "hybrid")
+	 s.T.s7   = function(x) expm::expm(x, "Taylor", order = 7),
+	 s.TOs7   = function(x) expm::expm(x, "TaylorO",order = 7),
+	 s.T.s8   = function(x) expm::expm(x, "Taylor", order = 8), # default
+	 s.TOs8   = function(x) expm::expm(x, "TaylorO",order = 8), # default
+	 s.T.s9   = function(x) expm::expm(x, "Taylor", order = 9),
+	 s.TOs9   = function(x) expm::expm(x, "TaylorO",order = 9),
+	 Eigen    = expm.safe.Eigen, # "R_Eigen"
+	 hybrid   = function(x) expm::expm(x, "hybrid")
 	 )
 
 
+## set.seed(12)
+## facMchk <- replicate(if(doExtras) 100 else 20, facMat(20, rnorm))
 set.seed(12)
 fRE <- replicate(if(doExtras) 100 else 20,
-                 re.facMat(20, expmList))
+                 re.facMat(20, expmList)) # if(doExtras) gives one "No Matrix found ..." warning
+nDig <- -log10(t(fRE["relErr",,]))
 cat("Number of correct decimal digits for facMat(20, rnorm):\n")
-summary(-log10(t(fRE["relErr",,])))
-
+t(apply(nDig, 2, summary))
 
 ## Now look at that:
-boxplot(t(fRE["relErr",,]), log="y", notch=TRUE, ylim = c(8e-16, 1e-8),
+eaxis <- if(requireNamespace("sfsmisc")) sfsmisc::eaxis else axis
+op <- par(mar=.1 + c(5,4 + 1.5, 4,2))
+boxplot(t(fRE["relErr",,]), log="x", xaxt="n",
+        notch=TRUE, ylim = c(8e-16, 4e-9),
+        horizontal=TRUE, las = 1,
         main = "relative errors for 'random' eigen-ok 20 x 20 matrix")
+eaxis(1); grid(lty = 3);  mtext(myRversion, adj=1, cex=3/4)
+par(op)
 
 showProc.time()
 
-if(doExtras) {
+if(doExtras) withAutoprint({ # also "large" n = 100 ------------------------------------------
 str(rf100 <- replicate(20, re.facMat(100, expmList)))
-print(1000*t(apply(rf100["c.time",,], 1, summary)))
+1000*t(apply(rf100["c.time",,], 1, summary))
 ## lynne {Linux 2.6.34.7-56.fc13.x86_64 --- AMD Phenom II X4 925}:
 ##          Min. 1st Qu. Median  Mean 3rd Qu. Max.
 ## Ward       23      24   24.5  24.4    25.0   25
 ## s.P.s     107     109  109.0 109.0   109.0  112
-## s.P.sO    188     190  191.0 192.0   193.0  198
+## s.POs    188     190  191.0 192.0   193.0  198
 ## s.P.sRBS   17      18   19.0  18.9    19.2   21
 ## sPs.H08.   15      17   18.0  17.6    18.0   19
 ## sPs.H08b   18      18   19.0  23.4    20.0  107
 ## s.T.s      44      45   45.0  45.6    46.0   48
-## s.T.sO     96      98   99.0 100.0   100.0  116
+## s.TOs     96      98   99.0 100.0   100.0  116
 ## Eigen      18      19   20.0  24.4    21.0  109
 ## hybrid     40      42   42.0  47.1    44.0  133
 
+nDig <- -log10(t(rf100["relErr",,]))
+cat("Number of correct decimal digits for facMat(100, rnorm):\n")
+t(apply(nDig, 2, summary))
+
 ##--> take out the real slow ones for the subsequent tests:
-`%w/o%` <- function(x, y) x[!x %in% y] #--  x without y
-print(nms.swift <- names(expmList) %w/o%
- c("s.P.s", "s.P.sO", "s.T.s", "s.T.sO"))
-expmL.swift <- expmList[nms.swift]
+(not.slow <- grep("^s\\.[PT]", names(expmList), invert = TRUE, value = TRUE))
 
 set.seed(18) ## 12 replicates is too small .. but then it's too slow otherwise:
-rf400 <- replicate(12, re.facMat(400, expmL.swift))
-print(1000*t(apply(rf400["c.time",,], 1, summary)))
+rf400 <- replicate(12, re.facMat(400, expmList[not.slow]))
+
+showProc.time()
+1000*t(apply(rf400["c.time",,], 1, summary))
 ## lynne:
 ##          Min. 1st Qu. Median Mean 3rd Qu. Max.
 ## Ward     1740    1790   1830 1820    1860 1900
@@ -178,14 +218,18 @@ print(1000*t(apply(rf400["c.time",,], 1, summary)))
 ## Eigen     962     977    989  992    1000 1030
 ## hybrid   2740    2800   2840 2840    2890 2910
 
-showProc.time()
+nDig <- -log10(t(rf400["relErr",,]))
+cat("Number of correct decimal digits for (12 rep. of) facMat(400, rnorm):\n")
+t(apply(nDig, 2, summary))
 
-}## if(doExtras)  only
+}) else { # *not* (doExtras) -----------------------------------------------------------------
+    ## times (in millisec):
+    print(1000*t(apply(fRE["c.time",,], 1, summary)))
+}
 
 ## Now  try an example with badly conditioned "random" M matrix...
 ## ...
-## ... (not yet)
-
+## ...   (not yet -- TODO?)
 
 ### m2ex3() --- The 2x2 example with bad condition , see A3 in ./ex2.R
 
@@ -210,9 +254,9 @@ cbind(signif(t.m2.ranks, 3))
 ## AmHi09.13  4.33 <<- still not close to H08 !
 ## AmHi09.12  5.86
 ## s.T.s      8.33
-## s.T.sO     8.33
+## s.TOs     8.33
 ## s.P.s      9.11
-## s.P.sO     9.11
+## s.POs     9.11
 ## hybrid    10.80
 ## AmHi09.10 11.70 << astonishingly bad
 ## Eigen     12.60
@@ -247,7 +291,7 @@ matplot(eps, t.m2, type = "b", log = "xy", col=Bcol, lty = 1:9, pch=1:15,
             A == bgroup("[", atop({-1} *"  "* 1, {epsilon^2} *"  "*{-1}), "]")))
 legend("bottomright",colnames(t.m2),       col=Bcol, lty = 1:9, pch=1:15,
        inset = 0.02)
-if(require("sfsmisc")) {
+if(requireNamespace("sfsmisc")) {
     sfsmisc::eaxis(1, labels=FALSE)
     sfsmisc::eaxis(1, at = eps[c(TRUE,FALSE)])
     sfsmisc::eaxis(2)
@@ -275,9 +319,11 @@ lapply(expmList, function(EXPM) 1 - EXPM(me$A)/me$expA)
 ## Average number of correct digits [less "extreme" than plot above]
 nDig <- sapply(expmList, function(EXPM) -log10(mean(abs(1 - EXPM(me$A)/me$expA))))
 round(nDig, 2)
-##   Ward  s.P.s s.P.sO  s.T.s s.T.sO  Eigen hybrid
+##   Ward  s.P.s s.POs  s.T.s s.TOs  Eigen hybrid
 ##  16.26  14.65  14.65  14.65  14.65   6.20   6.39  [AMD Opteron 64-bit]
 ##    Inf  14.65  14.65  14.65  14.65   6.74   6.33  [Pentium-M (32-bit)]
+
+showProc.time()
 
 ###--- rnilMat() : random upper triangular (zero-diagonal) nilpotent  n x n matrix
 
@@ -305,46 +351,91 @@ EmN <- matrix(c(dN, 0, 0, 0, 0, 0, 0, 0, 0, 0,
               10, 10)
 
 Em.xct <- EmN / dN
+          all.equal(E.m, Em.xct, check.attributes = FALSE, tolerance = 0)
+stopifnot(all.equal(E.m, Em.xct, check.attributes = FALSE, tolerance= 1e-13))
 
-stopifnot(all.equal(E.m, Em.xct,
-                    check.attributes = FALSE, tolerance= 1e-13))
 re.x <- sapply(expmList, function(EXPM) relErr(Em.xct, EXPM(m)))
 ## with error message from "safe.Eigen"  -->  Eigen is NA here
-
 ## result depends quite a bit on platform
 which(is.na(re.x)) # gives  c(Eigen = 16L)  (but not everywhere ?!?)
 (re.x <- re.x[!is.na(re.x)])
 
 ## Pentium-M 32-bit ubuntu gave
-##      Ward     s.P.s    s.P.sO  sPs.H08.  sPs.H08b     s.T.s    s.T.sO    hybrid
+##      Ward     s.P.s    s.POs  sPs.H08.  sPs.H08b     s.T.s    s.TOs    hybrid
 ## 1.079e-16 4.505e-14 4.503e-14 9.379e-17 9.379e-17 3.716e-17 7.079e-18 1.079e-16
 ## 32-bit Quad-Core AMD Opteron 2380 (Linux 2.6.30.10-105.2.23.fc11.i686.PAE):
-##      Ward     s.P.s    s.P.sO  sPs.H08.  sPs.H08b     s.T.s    s.T.sO    hybrid
+##      Ward     s.P.s    s.POs  sPs.H08.  sPs.H08b     s.T.s    s.TOs    hybrid
 ## 1.079e-16 4.505e-14 4.503e-14 9.379e-17 9.379e-17 3.716e-17 7.079e-18 1.079e-16
 
 ## "Ward77": again more accurate than s+Pade+s, but s+Taylor+s is even more accurate
 
 ## but on 64-bit AMD Opterons
-##     Ward    s.P.s   s.P.sO sPs.H08. sPs.H08b    s.T.s   s.T.sO   hybrid
+##     Ward    s.P.s   s.POs sPs.H08. sPs.H08b    s.T.s   s.TOs   hybrid
 ## 4.42e-17 3.99e-17 3.99e-17 1.10e-16 1.10e-16 8.44e-17 8.44e-17 4.42e-17
 ##
 ## even more astonishing the result on Mac OSX (x86_32_mac; R-forge, R 2.9.0 patch.)
-##     Ward    s.P.s   s.P.sO sPs.H08. sPs.H08b    s.T.s   s.T.sO hybrid
+##     Ward    s.P.s   s.POs sPs.H08. sPs.H08b    s.T.s   s.TOs hybrid
 ## 5.13e-17 3.99e-17 3.99e-17 1.84e-15 1.84e-15 8.44e-17 8.44e-17 5.13e-17
 
 ## 2014-09: AmHi09 are very good (64bit: 8e-17) for p >= 8 (p=6 has 1.5e-11)
 
 not.09.06 <- which(names(re.x) != "AmHi09.06")
-stopifnot(re.x[c("Ward", "s.T.s", "s.T.sO")] < 3e-16,
-          re.x[["AmHi09.06"]] < 9e-11, # x64 & 686(lnx): = 1.509e-11
+stopifnot(re.x[c("Ward", "s.T.s8", "s.TOs8")] < 3e-16,
+          ## re.x[["AmHi09.06"]] < 9e-11, # x64 & 686(lnx): = 1.509e-11
           re.x[not.09.06] < 4e-13)# max: 686(32b): 4.52e-14, x64(lnx): 1.103e-16
 
 ##-- Looking at *sparse* matrices: [C,Fortran "dense" code based methods will fail]:
 (meths <- eval(formals(expm)$method))
 ems <- sapply(meths, function(met)
               tryCatch(expm::expm(m., method=met), error=identity))
-ok <- !sapply(ems, is, class="error")
+ok <- !sapply(ems, is, class2="error")
 meths[ok] # now most... are
+
+showProc.time()
+
+## Complex Matrices
+re.facMat.Z <- function(n, EXPMlist, rFUN = function(n) rnorm(n) + 1i*rnorm(n), ...)
+{
+    stopifnot(is.list(EXPMlist))
+    r <- facMat(n, rFUN, ...)
+    vapply(EXPMlist, function(EXPM) {
+	ct <- system.time(E <- EXPM(r$A), gcFirst = FALSE)[[1]]
+	c(relErr = relErr(r$expA, E), c.time = ct)
+    }, double(2))
+}
+
+(nmL <- names(expmList))
+##  [1] "Matr"      "Matr.d"    "Ward"      "Ward1b"    "s.P.s"     "s.POs"     "s.P.s7"
+##  [8] "s.POs7"    "s.P.s9"    "s.POs9"    "s.P.sRBS"  "sPs.H08."  "sPs.H08b"  "AmHi09.06"
+## [15] "AmHi09.07" "AmHi09.08" "AmHi09.09" "AmHi09.10" "AmHi09.12" "AmHi09.13" "s.T.s"
+## [22] "s.TOs"     "s.T.s7"    "s.TOs7"    "s.T.s9"    "s.TOs9"    "Eigen"     "hybrid"
+
+## dropping "Matr", "Matr.d" (which gives "dgeMatrix" currently --> mean(.) fails ...
+##          "Ward" "Ward1b" and "hybrid"  error "not a numeric Matrix"
+##          "AmHi09": C code currently only for double precision  ((FIXME))
+(cplxN <- grep("^(Matr|Ward|hybr|AmHi09|s\\.[PT])", nmL, invert = TRUE, value = TRUE))
+
+rr <- re.facMat.Z(4, expmList[cplxN])
+
+set.seed(47)
+fREZ <- replicate(if(doExtras) 64 else 12,
+                 re.facMat.Z(15, expmList[cplxN]))
+nDig <- -log10(t(fREZ["relErr",,]))
+cat("Number of correct decimal digits for facMat(20, rnorm + i*rnorm):\n")
+t(apply(nDig, 2, summary))
+
+## times (in millisec):
+print(1000*t(apply(fREZ["c.time",,], 1, summary)))
+
+## Now look at that:
+op <- par(mar=.1 + c(5,4 + 1.5, 4,2))
+boxplot(t(fREZ["relErr",,]), log="x", xaxt="n",
+        notch=TRUE, # ylim = c(8e-16, 4e-9),
+        horizontal=TRUE, las = 1,
+        main = "relative errors for 'random' <complex> eigen-ok 20 x 20 matrix")
+eaxis(1); grid(lty = 3);  mtext(myRversion, adj=1, cex=3/4)
+par(op)
+
 
 
 showProc.time()
