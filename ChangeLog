@@ -1,3 +1,17 @@
+2026-08-21  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* vignettes/expm.Rnw: fix `Matrix` package and `octave` citations.
+
+2026-07-30  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* man/expm.Rd: replace `structure(., .Dim = *)` by  `array(., dim = *)`
+
+2024-11-02  Martin Maechler  <maechler@stat.math.ethz.ch>
+
+	* tests/exact-ex.R: protect against NULL `osVersion`
+
+	* DESCRIPTION (Version): 1.0-1
+
 2024-08-19  Martin Maechler  <maechler@stat.math.ethz.ch>
 
 	* tests/exact-ex.R (osV): ensure valid in filename

@@ -1,8 +1,9 @@
 Package: expm
 Type: Package
 Title: Matrix Exponential, Log, 'etc'
-Version: 1.0-0
-Date: 2024-08-19
+Version: 1.0-1
+VersionNote: Last CRAN: 1.0-0 on 2024-08-19
+Date: 2026-08-21
 Authors@R: c(person("Martin", "Maechler", role=c("aut","cre"),
                     email="maechler@stat.math.ethz.ch", comment = c(ORCID = "0000-0002-8685-9910"))
   , person("Christophe","Dutang", role = "aut", comment = c(ORCID = "0000-0001-6732-1501"))
@@ -24,14 +25,16 @@ URL: https://R-Forge.R-project.org/projects/expm/
 BugReports: https://R-forge.R-project.org/tracker/?atid=472&group_id=107
 Encoding: UTF-8
 NeedsCompilation: yes
-Packaged: 2024-08-19 09:24:41 UTC; maechler
-Author: Martin Maechler [aut, cre] (<https://orcid.org/0000-0002-8685-9910>),
-  Christophe Dutang [aut] (<https://orcid.org/0000-0001-6732-1501>),
-  Vincent Goulet [aut] (<https://orcid.org/0000-0002-9315-5719>),
+Packaged: 2026-08-22 20:05:08 UTC; maechler
+Author: Martin Maechler [aut, cre] (ORCID:
+    <https://orcid.org/0000-0002-8685-9910>),
+  Christophe Dutang [aut] (ORCID:
+    <https://orcid.org/0000-0001-6732-1501>),
+  Vincent Goulet [aut] (ORCID: <https://orcid.org/0000-0002-9315-5719>),
   Douglas Bates [ctb] (cosmetic clean up, in svn r42),
   David Firth [ctb] (expm(method= "PadeO" and "TaylorO")),
   Marina Shapira [ctb] (expm(method= "PadeO" and "TaylorO")),
   Michael Stadelmann [ctb] ("Higham08*" methods, see ?expm.Higham08...)
 Maintainer: Martin Maechler <maechler@stat.math.ethz.ch>
 Repository: CRAN
-Date/Publication: 2024-08-19 15:20:07 UTC
+Date/Publication: 2026-08-23 04:40:02 UTC

@@ -4,6 +4,7 @@
   \usepackage[T1]{fontenc}
   \usepackage[english]{babel}
   %\usepackage{lucidabr}
+  \usepackage{hyperref}
   \usepackage[noae]{Sweave}
 
   %\VignetteIndexEntry{Using expm in packages}
@@ -18,6 +19,7 @@
   \newcommand{\proglang}[1]{\textsf{#1}}
   \newcommand{\pkg}[1]{\textbf{#1}}
   \newcommand{\mat}[1]{\mathbf{#1}}
+  \newcommand*{\CRANpkg}[1]{\href{https://CRAN.R-project.org/package=#1}{\pkg{#1}}}
 
   \bibliographystyle{plainnat}
 
@@ -95,10 +97,9 @@ with
 \end{align*}
 See \cite{MolerVanLoan:78} for an exhaustive treatment of the subject.
 
-The \proglang{C} routine is based on a translation made by
-\cite{Matrix} of the implementation of the corresponding Octave
-function \citep{octave}.
-
+The \proglang{C} routine is based on a translation
+of the corresponding Octave implementation of function \texttt{expm}, \citep{octave},
+made by the \CRANpkg{Matrix} package authors, see \cite{Matrix-pkg}.
 
 \section{Calling the functions from other packages}
 
